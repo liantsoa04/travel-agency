@@ -73,6 +73,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Base de données MySQL ---
+# --- Base de données MySQL ---
+DB_OPTIONS = {"charset": "utf8mb4"}
+if config("DB_SSL", default=False, cast=bool):
+    DB_OPTIONS["ssl"] = {"ssl_mode": "REQUIRED"}
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -81,10 +86,9 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD", default=""),
         "HOST": config("DB_HOST", default="localhost"),
         "PORT": config("DB_PORT", default="3306"),
-        "OPTIONS": {"charset": "utf8mb4"},
+        "OPTIONS": DB_OPTIONS,
     }
 }
-
 # --- Utilisateur personnalisé (avec rôles) ---
 AUTH_USER_MODEL = "accounts.User"
 
