@@ -1,0 +1,39 @@
+/* =====================================================
+   1. VARIABLES : couleurs, polices, arrondis, ombres
+   Pour changer l'allure de tout le site, modifiez ici.
+   ===================================================== */
+:root {
+  /* Fonds */
+  --blanc-casse: #fbf8f1;   /* fond général (ivoire) */
+  --sable: #f4ecdc;         /* surfaces secondaires (sable clair) */
+  --beige: #e9dcc3;         /* fonds discrets, barres de progression */
+
+  /* Vert : couleur principale */
+  --vert: #2f6b4f;
+  --vert-fonce: #1b4332;
+  --vert-clair: #e1eee5;
+
+  /* Orange terracotta : couleur d'accent */
+  --orange: #d9772b;
+  --orange-fonce: #b85f1c;
+  --orange-clair: #fbebdc;
+
+  /* États (erreur) */
+  --rouge: #b5412f;
+  --rouge-clair: #f6dcd6;
+
+  /* Textes et bordures */
+  --texte: #26241f;
+  --texte-doux: #6a6457;
+  --bordure: #e6dcc7;
+
+  /* Formes */
+  --rayon: 14px;
+  --rayon-petit: 10px;
+  --ombre: 0 1px 3px rgba(40, 30, 10, 0.06), 0 4px 14px rgba(40, 30, 10, 0.05);
+  --ombre-forte: 0 12px 32px rgba(40, 30, 10, 0.16);
+
+  /* Polices */
+  --police-titre: "Fraunces", Georgia, serif;
+  --police-texte: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+}

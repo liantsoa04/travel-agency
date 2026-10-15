@@ -1,0 +1,33 @@
+/* =====================================================
+   6. CARTES DE VOYAGES ET FILTRES
+   ===================================================== */
+.voyage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+
+.voyage-card { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); overflow: hidden; box-shadow: var(--ombre); display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s; }
+.voyage-card:hover { box-shadow: var(--ombre-forte); transform: translateY(-2px); }
+
+/* Photo + pastilles posées dessus */
+.voyage-card-img { position: relative; height: 195px; }
+.voyage-card-img img, .voyage-card-img .img-fallback { width: 100%; height: 100%; object-fit: cover; }
+.voyage-card-img .badge { position: absolute; top: 12px; right: 12px; }
+.voyage-cat { position: absolute; top: 12px; left: 12px; background: var(--vert-fonce); color: #fff; font-size: 0.76rem; font-weight: 700; padding: 0.22rem 0.7rem; border-radius: 999px; }
+.voyage-cat.static { position: static; display: inline-block; }
+
+/* Texte de la carte */
+.voyage-card-body { padding: 1.1rem 1.2rem 1.2rem; display: flex; flex-direction: column; flex: 1; }
+.voyage-card-body h3 { font-size: 1.15rem; color: var(--vert-fonce); margin-bottom: 0.4rem; }
+.voyage-dest, .voyage-dates { display: flex; align-items: center; gap: 0.4rem; color: var(--texte-doux); font-size: 0.9rem; margin-bottom: 0.25rem; }
+.voyage-dest .icon, .voyage-dates .icon { color: var(--orange); }
+.voyage-card-footer { display: flex; justify-content: space-between; align-items: end; margin-top: auto; padding-top: 1rem; gap: 0.5rem; }
+.voyage-prix { font-family: var(--police-titre); font-size: 1.35rem; font-weight: 700; color: var(--orange-fonce); margin: 0; }
+.voyage-places { font-size: 0.8rem; color: var(--texte-doux); margin: 0; }
+
+/* Filtres de la page « Voyages » */
+.filters { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 1.1rem; margin-bottom: 1.5rem; box-shadow: var(--ombre); }
+.filters .searchbar { margin-bottom: 0.9rem; background: var(--blanc-casse); }
+.filters-row { display: flex; flex-wrap: wrap; gap: 0.8rem 1rem; align-items: end; }
+.filters-row .form-group { margin: 0; min-width: 130px; flex: 1; }
+.result-count { color: var(--texte-doux); margin-bottom: 0.8rem; }
+
+@media (max-width: 960px) { .voyage-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .voyage-grid { grid-template-columns: 1fr; } }

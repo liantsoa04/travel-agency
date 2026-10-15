@@ -1,0 +1,48 @@
+/* =====================================================
+   8. DASHBOARD ET STATISTIQUES
+   ===================================================== */
+
+/* ----- Cartes de statistiques ----- */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 0.9rem; }
+.stat-card { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 0.85rem 1rem; box-shadow: var(--ombre); }
+.stat-top { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.stat-label { margin: 0; color: var(--texte-doux); font-size: 0.86rem; font-weight: 700; }
+.stat-value { margin: 0.35rem 0 0.15rem; font-family: var(--police-titre); font-size: 1.65rem; font-weight: 700; color: var(--texte); line-height: 1.1; }
+.stat-variation { display: flex; align-items: center; gap: 0.3rem; margin: 0; font-size: 0.82rem; font-weight: 700; }
+.stat-variation span { color: var(--texte-doux); font-weight: 400; }
+.stat-variation.up { color: var(--vert); }
+.stat-variation.down { color: var(--rouge); }
+
+/* Pastille d'icône : sa couleur dépend de la carte (green / orange / sand) */
+.stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--vert-clair); color: var(--vert); }
+.stat-orange .stat-icon { background: var(--orange-clair); color: var(--orange-fonce); }
+.stat-sand .stat-icon { background: var(--beige); color: var(--vert-fonce); }
+
+/* ----- Mise en page en 2 colonnes ----- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+
+/* ----- Classement (voyages populaires) ----- */
+.rank-list { list-style: none; margin: 0; padding: 0; }
+.rank-list li { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0; border-bottom: 1px solid var(--bordure); }
+.rank-list li:last-child { border-bottom: 0; }
+.rank { width: 30px; height: 30px; border-radius: 50%; background: var(--vert-clair); color: var(--vert-fonce); font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rank-list small { display: block; color: var(--texte-doux); }
+.rank-count { margin-left: auto; font-weight: 700; color: var(--orange-fonce); white-space: nowrap; }
+
+/* ----- Alertes importantes ----- */
+.alert-line { padding: 0.65rem 0.9rem; border-radius: var(--rayon-petit); font-size: 0.92rem; margin-bottom: 0.5rem; border-left: 4px solid; }
+.alert-line-info { background: var(--vert-clair); border-color: var(--vert); }
+.alert-line-warning { background: var(--orange-clair); border-color: var(--orange); }
+.alert-line-danger { background: var(--rouge-clair); border-color: var(--rouge); }
+
+/* ----- Barres de progression ----- */
+.bar-row { margin-bottom: 1rem; }
+.bar-label { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; font-size: 0.92rem; }
+.bar-track { height: 9px; background: var(--beige); border-radius: 999px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--vert); border-radius: 999px; }
+.bar-orange { background: var(--orange); }
+
+/* ----- Responsive ----- */
+@media (max-width: 1050px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }

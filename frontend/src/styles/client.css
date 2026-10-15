@@ -1,0 +1,133 @@
+/* =====================================================
+   5. ESPACE CLIENT : navbar, accueil, pages, footer
+   ===================================================== */
+
+/* ----- Barre de navigation ----- */
+.navbar { background: rgba(251, 248, 241, 0.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--bordure); position: sticky; top: 0; z-index: 50; }
+.navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.nav-links { display: flex; align-items: center; gap: 1.6rem; }
+.nav-links a:not(.btn) { text-decoration: none; color: var(--texte); font-weight: 700; font-size: 0.95rem; padding: 0.4rem 0; border-bottom: 2px solid transparent; }
+.nav-links a:not(.btn):hover { color: var(--vert); }
+.nav-links a.active:not(.btn) { color: var(--vert); border-bottom-color: var(--orange); }
+.burger { display: none; background: none; border: 0; cursor: pointer; color: var(--vert-fonce); padding: 0.3rem; }
+
+/* ----- Bannière d'accueil ----- */
+.hero {
+  background: linear-gradient(100deg, rgba(27, 67, 50, 0.9) 20%, rgba(27, 67, 50, 0.2)),
+    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=70") center/cover, var(--vert-fonce);
+  color: #fff; padding: 6rem 0 5.5rem;
+}
+.hero-content { max-width: 1150px; }
+.hero h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); max-width: 660px; }
+.hero p { font-size: 1rem; max-width: 560px; margin-bottom: 1.25rem; opacity: 0.95; }
+/* Barre de recherche de la bannière : un seul bloc blanc */
+.hero-search { display: flex; gap: 0.4rem; max-width: 540px; margin-bottom: 1rem; background: #fff; padding: 0.35rem; border-radius: 14px; box-shadow: var(--ombre-forte); }
+.hero-search input { flex: 1; border: 0; background: transparent; box-shadow: none; }
+.hero-search input:focus { box-shadow: none; }
+
+/* ----- Sections de la page d'accueil ----- */
+.section { padding: 2.75rem 1.25rem; }
+.section-sand { background: var(--sable); }
+.section-title { font-size: 1.5rem; margin-bottom: 1.1rem; color: var(--vert-fonce); }
+
+/* Destinations populaires */
+.dest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.dest-card { position: relative; height: 220px; border-radius: var(--rayon); overflow: hidden; display: block; text-decoration: none; box-shadow: var(--ombre); }
+.dest-card img, .dest-card .img-fallback { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.dest-card:hover img { transform: scale(1.05); }
+.dest-overlay { position: absolute; inset: auto 0 0 0; padding: 2.5rem 1rem 0.9rem; color: #fff; background: linear-gradient(transparent, rgba(15, 30, 22, 0.8)); display: flex; flex-direction: column; }
+.dest-overlay strong { font-family: var(--police-titre); font-size: 1.2rem; }
+.dest-overlay span { font-size: 0.88rem; opacity: 0.9; }
+
+/* Pourquoi nous choisir */
+.why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.why-item { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 1.4rem; box-shadow: var(--ombre); }
+.why-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--vert-clair); color: var(--vert); display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem; }
+.why-item h3 { font-size: 1.08rem; }
+.why-item p { color: var(--texte-doux); font-size: 0.93rem; margin: 0; }
+
+/* Bandeau d'appel à l'action */
+.cta { background: var(--vert-fonce); color: #fff; text-align: center; padding: 3.8rem 0; }
+.cta h2 { font-size: 1.9rem; }
+.cta p { opacity: 0.9; margin-bottom: 1.3rem; }
+
+/* ----- Pages intérieures ----- */
+.page { padding-top: 2.2rem; padding-bottom: 3rem; }
+.page.narrow { max-width: 760px; }
+.page-title { font-size: 1.6rem; color: var(--vert-fonce); }
+.page-subtitle { color: var(--texte-doux); margin-bottom: 1rem; }
+.back-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; text-decoration: none; font-weight: 700; }
+.back-link:hover { color: var(--vert-fonce); }
+
+/* ----- Détail d'un voyage + réservation ----- */
+.details-grid, .reservation-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 2rem; align-items: start; }
+.details-img { width: 100%; height: 400px; object-fit: cover; border-radius: var(--rayon); box-shadow: var(--ombre); }
+.details-h2 { margin-top: 1.5rem; color: var(--vert-fonce); }
+.details-desc { font-size: 1.05rem; max-width: 70ch; }
+.booking-box { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 1.5rem; box-shadow: var(--ombre); position: sticky; top: 88px; }
+.booking-box h1 { font-size: 1.6rem; color: var(--vert-fonce); }
+.booking-tags { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; }
+.booking-prix { font-family: var(--police-titre); font-size: 2rem; color: var(--orange-fonce); margin: 0.6rem 0; }
+.booking-prix span { font-family: var(--police-texte); font-size: 0.9rem; color: var(--texte-doux); }
+.booking-info { margin: 0 0 1rem; }
+.booking-info div { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--bordure); }
+.booking-info dt { color: var(--texte-doux); }
+.booking-info dd { margin: 0; font-weight: 700; }
+.booking-box .btn { margin-top: 1rem; }
+
+/* Formulaire de réservation */
+.card-form { background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 1.6rem; box-shadow: var(--ombre); }
+.info-box { background: var(--sable); border-radius: var(--rayon-petit); padding: 0.9rem 1rem; margin-bottom: 1rem; }
+.info-box p { margin: 0; }
+.stepper { display: flex; align-items: center; gap: 0.5rem; max-width: 220px; }
+.stepper button { width: 42px; height: 42px; border-radius: var(--rayon-petit); border: 1.5px solid var(--bordure); background: #fff; font-size: 1.3rem; cursor: pointer; color: var(--vert-fonce); }
+.stepper button:hover { background: var(--vert-clair); border-color: var(--vert); }
+.stepper input { text-align: center; }
+.recap { margin-top: 1rem; }
+.recap div { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--bordure); }
+.recap-total { font-size: 1.3rem; border-bottom: 0 !important; color: var(--orange-fonce); font-weight: 700; }
+
+/* ----- Mes réservations ----- */
+.resa-list { display: grid; gap: 1rem; }
+.resa-card { display: grid; grid-template-columns: 200px 1fr; background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); overflow: hidden; box-shadow: var(--ombre); }
+.resa-img { width: 100%; height: 100%; min-height: 150px; object-fit: cover; }
+.resa-body { padding: 1.1rem 1.3rem; }
+.resa-top { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.resa-top h3 { margin: 0; color: var(--vert-fonce); }
+.resa-dates { display: flex; align-items: center; gap: 0.4rem; }
+.resa-bottom { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.resa-bottom strong { color: var(--orange-fonce); font-size: 1.1rem; }
+
+/* ----- Profil ----- */
+.profile-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+
+/* ----- Pied de page ----- */
+.footer { background: var(--vert-fonce); color: #dfeae3; padding: 2.8rem 0 1rem; margin-top: 2rem; }
+.footer .logo { color: #fff; margin-bottom: 0.6rem; }
+.footer .logo-mark { background: var(--orange); }
+.footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
+.footer-inner strong { color: #fff; display: block; margin-bottom: 0.3rem; }
+.footer-inner a { display: block; color: #dfeae3; text-decoration: none; margin-top: 0.35rem; }
+.footer-inner a:hover { color: #fff; text-decoration: underline; }
+.footer-copy { text-align: center; font-size: 0.85rem; opacity: 0.7; margin-top: 2rem; }
+
+/* ----- Responsive ----- */
+@media (max-width: 900px) {
+  .dest-grid, .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .details-grid, .reservation-grid { grid-template-columns: 1fr; }
+  .booking-box { position: static; }
+  .details-img { height: 260px; }
+}
+@media (max-width: 760px) {
+  .burger { display: block; }
+  .nav-links { display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--blanc-casse); flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.2rem 1.25rem; border-bottom: 1px solid var(--bordure); box-shadow: var(--ombre); }
+  .nav-links.open { display: flex; }
+  .hero { padding: 3.5rem 0; }
+  .hero-search { flex-direction: column; }
+  .resa-card { grid-template-columns: 1fr; }
+  .resa-img { height: 160px; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .dest-grid, .why-grid { grid-template-columns: 1fr; }
+}
