@@ -1,115 +1,79 @@
-# 🌴 Horizon Voyages — Gestion d'une agence de voyage
+# Horizon Voyages
 
-Application web complète : **backend Django REST + MySQL + JWT**, **frontend React (Vite)**.
-Deux espaces distincts : **Admin / Employé** (gestion et statistiques) et **Client** (découverte et réservation).
+Application de gestion d'une agence de voyage. Le backend est en Django (API REST avec authentification JWT) et la base de données est MySQL. Le frontend est en React (Vite).
 
-## 1. Fonctionnalités
+Il y a deux espaces :
 
-**Espace Admin / Employé** : dashboard (cartes, graphiques, voyages populaires, réservations récentes, alertes), CRUD voyages / clients, gestion des réservations (confirmer, annuler), statistiques, gestion des utilisateurs (admin seulement), paramètres.
+- **Admin / Employé** : tableau de bord, gestion des voyages, des clients et des réservations, statistiques.
+- **Client** : liste des voyages avec recherche et filtres, réservation, suivi de ses réservations, profil.
 
-**Espace Client** : accueil, liste des voyages avec recherche et filtres, détail d'un voyage, réservation avec prix calculé, « Mes réservations » (annulation possible), « Mon profil ».
+## Technologies
 
-**Fonctionnalités un peu avancées (simples à expliquer)**
-1. Prix total automatique : `prix du voyage × nombre de personnes` (`reservations/models.py`, méthode `save`).
-2. Places automatiques : confirmer une réservation **diminue** les places, annuler une réservation confirmée **les rend** (méthodes `confirmer` et `annuler`).
-3. Statut du voyage automatique : Disponible / Presque complet (20 % de places ou moins) / Complet / Terminé (`voyages/models.py`, méthode `calculer_statut`).
-4. Voyages populaires : comptage des réservations non annulées (`/api/voyages/populaires/`).
-5. Dashboard calculé automatiquement (`dashboard/views.py`).
-6. Recherche et filtres : destination, pays, ville, catégorie, prix min/max, date, disponibilité.
+- Backend : Python, Django, Django REST Framework, SimpleJWT, django-cors-headers, MySQL
+- Frontend : React, Vite, React Router, Axios, Recharts
 
-## 2. Technologies
-
-Python, Django, Django REST Framework, MySQL, JWT (`djangorestframework-simplejwt`), `django-cors-headers` — React, Vite, React Router, Axios, CSS, Recharts.
-
-## 3. Architecture
+## Structure du projet
 
 ```text
 travel-agency/
 ├── backend/
-│   ├── manage.py, requirements.txt, .env.example
-│   ├── config/        settings.py, urls.py ...
-│   ├── accounts/      utilisateur + rôles, login JWT, inscription
-│   ├── voyages/       modèle Voyage + API + filtres
-│   ├── clients/       modèle Client + API + profil
-│   ├── reservations/  modèle Reservation + règles métier
-│   └── dashboard/     statistiques + commande « seed » (données de test)
-├── frontend/
-│   └── src/ components, pages (auth, admin, client), layouts, services, context, hooks, utils, styles
-└── README.md
+│   ├── config/         réglages et routes principales
+│   ├── accounts/       utilisateurs, rôles, connexion, inscription
+│   ├── voyages/        voyages et filtres
+│   ├── clients/        clients et profil
+│   ├── reservations/   réservations et règles de calcul
+│   └── dashboard/      statistiques et données de test
+└── frontend/
+    └── src/            pages, composants, services, styles
 ```
 
-## 4. Installation de MySQL et création de la base
+## Fonctionnement
 
-1. Installez MySQL (ou XAMPP / WAMP) et démarrez le serveur MySQL.
-2. Ouvrez phpMyAdmin ou le terminal MySQL (`mysql -u root -p`) et exécutez :
+- Le prix total d'une réservation est calculé automatiquement : prix du voyage × nombre de personnes.
+- Quand une réservation est confirmée, le nombre de places du voyage diminue. Si elle est annulée après confirmation, les places sont rendues.
+- Le statut d'un voyage change tout seul : Disponible, Presque complet (20 % de places ou moins), Complet ou Terminé.
+- Un client ne voit que ses propres réservations.
+
+## Installation
+
+### 1. Base de données
+
+Installez MySQL (XAMPP) :
 
 ```sql
 CREATE DATABASE travel_agency CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-## 5. Backend Django
+### 2. Backend
 
 ```bash
 cd backend
 python -m venv venv
-```
-
-Activer l'environnement : **Windows** `venv\Scripts\activate` — **Mac/Linux** `source venv/bin/activate`
-
-```bash
+venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> Si `mysqlclient` ne s'installe pas sous Windows : `pip install pymysql`, puis ajoutez en haut de `config/__init__.py` :
-> ```python
-> import pymysql
-> pymysql.install_as_MySQLdb()
-> ```
 
-### Fichier `.env`
 
-Copiez `.env.example` en `.env` (dans `backend/`) et adaptez :
+Créez ensuite un fichier `.env` dans le dossier `backend/` avec ces variables : `SECRET_KEY`, `DEBUG`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST` et `DB_PORT`. Ce fichier n'est pas envoyé sur GitHub.
 
-```env
-SECRET_KEY=mettez_une_longue_phrase_secrete_ici
-DEBUG=True
+Si `mysqlclient` ne s'installe pas sous Windows, le projet utilise `pymysql` à la place (déjà configuré dans `config/__init__.py`).
 
-DB_NAME=travel_agency
-DB_USER=root
-DB_PASSWORD=votre_mot_de_passe_mysql
-DB_HOST=localhost
-DB_PORT=3306
-```
-
-### Migrations et données de test
+Puis :
 
 ```bash
-python manage.py makemigrations accounts clients voyages reservations
 python manage.py migrate
 python manage.py seed
-```
-
-`seed` crée les comptes de test, 9 voyages, 6 clients et 27 réservations (pour que le dashboard soit déjà rempli). Pour tout recréer : `python manage.py seed --reset`.
-
-### Créer un administrateur (optionnel)
-
-Les comptes de test existent déjà (voir plus bas). Pour créer votre propre admin :
-
-```bash
-python manage.py createsuperuser
-```
-
-(Il demande un e-mail, un nom d'utilisateur et un mot de passe. Il aura automatiquement le rôle **admin**.)
-
-### Lancer le backend
-
-```bash
 python manage.py runserver
 ```
 
-API : http://127.0.0.1:8000/api/ — Admin Django : http://127.0.0.1:8000/admin/
+La commande `seed` ajoute des comptes de test, des voyages, des clients et des réservations, pour que le tableau de bord ne soit pas vide. Pour tout recréer : `python manage.py seed --reset`.
 
-## 6. Frontend React
+L'API est disponible sur http://127.0.0.1:8000/api/.
+
+### 3. Frontend
+
+Dans un deuxième terminal :
 
 ```bash
 cd frontend
@@ -117,137 +81,47 @@ npm install
 npm run dev
 ```
 
-Le fichier `frontend/.env` contient déjà :
+Le site s'ouvre sur http://localhost:5173.
 
-```env
-VITE_API_URL=http://127.0.0.1:8000/api
-```
+## Comptes de test
 
-Ouvrez http://localhost:5173
+| Rôle | E-mail | Mot de passe |
+|------|--------|--------------|
+| Admin | admin@agence.com | Admin123! |
+| Employé | employe@agence.com | Employe123! |
+| Client | client@agence.com | Client123! |
 
-## 7. Lancement quotidien (2 terminaux)
-
-Terminal 1 :
-```bash
-cd backend
-venv\Scripts\activate
-python manage.py runserver
-```
-Terminal 2 :
-```bash
-cd frontend
-npm run dev
-```
-
-## 8. Comptes de test
-
-| Rôle | E-mail | Mot de passe | Redirigé vers |
-|------|--------|--------------|---------------|
-| Admin | admin@agence.com | Admin123! | /admin |
-| Employé | employe@agence.com | Employe123! | /admin |
-| Client | client@agence.com | Client123! | / (espace client) |
-
-Les autres clients de test (tiana@, fidy@, lalao@, hanta@agence.com) ont le mot de passe `Client123!`.
-
-## 9. URLs de l'application
-
-| Page | URL |
-|------|-----|
-| Accueil client | http://localhost:5173/ |
-| Voyages | http://localhost:5173/voyages |
-| Connexion / Inscription | /login — /register |
-| Mes réservations / Profil | /mes-reservations — /profil |
-| Dashboard admin | /admin |
-| Voyages, Réservations, Clients, Utilisateurs, Statistiques, Paramètres | /admin/voyages, /admin/reservations, /admin/clients, /admin/utilisateurs, /admin/statistiques, /admin/parametres |
-
-## 10. Les rôles
+## Rôles et accès
 
 | | Admin | Employé | Client |
 |---|---|---|---|
-| Dashboard, statistiques | ✅ | ✅ | ❌ |
-| Voyages / clients / réservations (gestion) | ✅ | ✅ | ❌ |
-| Gérer les utilisateurs | ✅ | ❌ | ❌ |
-| Réserver, voir ses réservations, son profil | — | — | ✅ |
+| Tableau de bord et statistiques | oui | oui | non |
+| Gérer voyages, clients, réservations | oui | oui | non |
+| Gérer les utilisateurs | oui | non | non |
+| Réserver et voir ses réservations | non | non | oui |
 
-- **Côté Django** : les permissions sont dans `accounts/permissions.py` (`IsAdmin`, `IsAdminOrEmployee`, `IsStaffOrReadOnly`). Un client qui appelle l'API admin reçoit une erreur 403, et ne voit que **ses** réservations.
-- **Côté React** : `ProtectedRoute` (connecté ?) et `AdminRoute` (rôle admin / employé ?) protègent les pages.
+Les permissions côté Django sont dans `accounts/permissions.py`. Côté React, les pages sont protégées par `ProtectedRoute` et `AdminRoute`.
 
-## 11. Authentification JWT (en simple)
+## API
 
-```text
-Login (e-mail + mot de passe)
-   ↓
-Django vérifie
-   ↓
-Access token (2 h) + Refresh token (7 jours) + infos utilisateur (dont le rôle)
-   ↓
-React les garde dans localStorage
-   ↓
-Axios ajoute « Authorization: Bearer <token> » à chaque requête (services/api.js)
-   ↓
-Si le token a expiré (401) : Axios utilise le refresh token pour en obtenir un nouveau
-```
+Toutes les routes commencent par `/api` et demandent un token JWT (`Authorization: Bearer ...`), sauf celles marquées « public ».
 
-## 12. CORS
+| Route | Description |
+|---|---|
+| `POST /auth/login/` | Connexion (public) |
+| `POST /auth/register/` | Inscription (public) |
+| `POST /auth/refresh/` | Renouveler le token (public) |
+| `GET /auth/me/` | Utilisateur connecté |
+| `/auth/users/` | Gestion des utilisateurs (admin) |
+| `/voyages/` | Liste publique avec filtres ; création, modification et suppression pour admin et employé |
+| `GET /voyages/populaires/` | Les voyages les plus réservés (public) |
+| `/clients/` | Gestion des clients (admin et employé) |
+| `/clients/me/` | Profil du client connecté |
+| `/reservations/` | Liste et création de réservations |
+| `POST /reservations/<id>/confirmer/` | Confirmer une réservation (admin et employé) |
+| `POST /reservations/<id>/annuler/` | Annuler une réservation |
+| `GET /dashboard/stats/` | Statistiques du tableau de bord (admin et employé) |
 
-Dans `config/settings.py` : `corsheaders` dans `INSTALLED_APPS`, `CorsMiddleware` **en premier** dans `MIDDLEWARE`, et `CORS_ALLOWED_ORIGINS` autorise `http://localhost:5173`. Sans cela, le navigateur bloquerait les appels de React vers Django.
+## Validations
 
-## 13. API REST
-
-Préfixe : `/api`. Toutes les routes demandent un token JWT (`Authorization: Bearer ...`) sauf mention contraire.
-
-### Authentification — `/api/auth/`
-| Méthode | URL | Rôle | Données envoyées | Réponse |
-|---|---|---|---|---|
-| POST | `/auth/login/` | Public | `email`, `password` | `access`, `refresh`, `user` |
-| POST | `/auth/refresh/` | Public | `refresh` | nouveau `access` |
-| POST | `/auth/register/` | Public | `first_name`, `last_name`, `email`, `password`, `telephone`, `adresse` | message de succès |
-| GET | `/auth/me/` | Connecté | — | infos de l'utilisateur |
-| GET/POST | `/auth/users/` | Admin | `email`, `first_name`, `last_name`, `role`, `password` | liste / utilisateur créé |
-| PATCH/DELETE | `/auth/users/<id>/` | Admin | champs à modifier | utilisateur / 204 |
-
-### Voyages — `/api/voyages/`
-| Méthode | URL | Rôle | Données | Réponse |
-|---|---|---|---|---|
-| GET | `/voyages/` | Public | filtres : `search`, `categorie`, `statut`, `prix_min`, `prix_max`, `date`, `disponible=true` | liste |
-| GET | `/voyages/<id>/` | Public | — | un voyage |
-| GET | `/voyages/populaires/` | Public | — | 6 voyages les plus réservés |
-| POST | `/voyages/` | Admin / Employé | `titre`, `destination`, `pays`, `ville`, `description`, `date_depart`, `date_retour`, `prix`, `nombre_places`, `categorie`, `image` | voyage créé |
-| PUT/PATCH | `/voyages/<id>/` | Admin / Employé | mêmes champs | voyage modifié |
-| DELETE | `/voyages/<id>/` | Admin / Employé | — | 204 |
-
-### Clients — `/api/clients/`
-| Méthode | URL | Rôle | Données | Réponse |
-|---|---|---|---|---|
-| GET | `/clients/?search=` | Admin / Employé | — | liste (avec nombre de réservations) |
-| POST | `/clients/` | Admin / Employé | `nom`, `prenom`, `email`, `telephone`, `adresse` | client créé |
-| PUT/PATCH/DELETE | `/clients/<id>/` | Admin / Employé | champs | client / 204 |
-| GET | `/clients/<id>/reservations/` | Admin / Employé | — | réservations du client |
-| GET/PATCH | `/clients/me/` | Client | `prenom`, `nom`, `telephone`, `adresse` | profil du client connecté |
-
-### Réservations — `/api/reservations/`
-| Méthode | URL | Rôle | Données | Réponse |
-|---|---|---|---|---|
-| GET | `/reservations/` | Tous | filtres : `search`, `statut`, `voyage` | tout pour le personnel, **seulement les siennes** pour un client |
-| POST | `/reservations/` | Tous | `voyage`, `nombre_personnes` (+ `client` si c'est le personnel) | réservation « en attente » |
-| POST | `/reservations/<id>/confirmer/` | Admin / Employé | — | réservation confirmée, places diminuées |
-| POST | `/reservations/<id>/annuler/` | Propriétaire ou personnel | — | réservation annulée (places rendues si elle était confirmée) |
-| DELETE | `/reservations/<id>/` | Admin / Employé | — | 204 |
-
-### Dashboard — `/api/dashboard/` (Admin / Employé)
-| Méthode | URL | Réponse |
-|---|---|---|
-| GET | `/dashboard/stats/` | cartes (avec % d'évolution), données mensuelles, voyages populaires, occupation, réservations récentes, alertes |
-| GET | `/dashboard/alertes/` | liste d'alertes (cloche de notifications) |
-
-## 14. Validations
-
-Backend (`serializers.py`) : e-mail valide et unique, prix > 0, places > 0, date de retour > date de départ, nombre de personnes ≥ 1, réservation impossible si le voyage est complet ou terminé, message « Nombre de places disponibles insuffisant. » si trop de personnes.
-Frontend : mêmes contrôles dans les formulaires, avec messages sous les champs.
-
-## 15. Remarques utiles
-
-- Les images des voyages sont des **liens (URL)**. Dans les données de test, ce sont des photos Unsplash (internet requis). Si une image ne charge pas, un fond de remplacement s'affiche.
-- Une réservation faite par un client est **« En attente »** : elle ne retire des places qu'une fois **confirmée** par l'admin / l'employé.
-- Supprimer un voyage ou un client supprime aussi ses réservations (message de confirmation affiché avant).
-- Le statut « Terminé » d'un voyage est recalculé à chaque enregistrement du voyage.
+Le backend vérifie notamment que l'e-mail est valide et unique, que le prix et le nombre de places sont positifs, que la date de retour est après la date de départ, et qu'on ne peut pas réserver un voyage complet ou terminé. Le frontend refait les mêmes contrôles dans les formulaires.
