@@ -128,8 +128,11 @@ SIMPLE_JWT = {
 }
 
 # --- CORS : autorise React (Vite) à appeler Django ---
+# --- CORS : autorise React (Vite) à appeler Django ---
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://travel-agency-ha5v.onrender.com",
 ]
+FRONTEND_URL = os.environ.get("FRONTEND_URL")
+if FRONTEND_URL:
+    CORS_ALLOWED_ORIGINS.append(FRONTEND_URL)
