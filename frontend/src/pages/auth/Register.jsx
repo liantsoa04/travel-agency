@@ -6,49 +6,49 @@ import Alert from "../../components/Alert";
 import Logo from "../../components/Logo";
 
 export default function Register() {
-  const { user, register } = useAuth();
-  const navigate = useNavigate();
-  const [form, setForm] = useState({
+  const { user: utilisateur, register } = useAuth();
+  const naviguer = useNavigate();
+  const [formulaire, setForm] = useState({
     first_name: "", last_name: "", email: "", telephone: "", adresse: "", password: "", confirmation: "",
   });
   const [erreurs, setErreurs] = useState({});
   const [erreurGlobale, setErreurGlobale] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [chargement, definirChargement] = useState(false);
 
-  if (user) return <Navigate to="/" replace />;
+  if (utilisateur) return <Navigate to="/" replace />;
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (evenement) => setForm({ ...formulaire, [evenement.target.name]: evenement.target.value });
 
-  async function submit(e) {
-    e.preventDefault();
-    const e1 = {};
-    if (!form.first_name.trim()) e1.first_name = "Le prénom est obligatoire.";
-    if (!form.last_name.trim()) e1.last_name = "Le nom est obligatoire.";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) e1.email = "Adresse e-mail invalide.";
-    if (form.password.length < 6) e1.password = "Au moins 6 caractères.";
-    if (form.password !== form.confirmation) e1.confirmation = "Les mots de passe ne correspondent pas.";
-    setErreurs(e1);
-    if (Object.keys(e1).length) return;
+  async function submit(evenement) {
+    evenement.preventDefault();
+    const erreursValidees = {};
+    if (!formulaire.first_name.trim()) erreursValidees.first_name = "Le prénom est obligatoire.";
+    if (!formulaire.last_name.trim()) erreursValidees.last_name = "Le nom est obligatoire.";
+    if (!/^\S+@\S+\.\S+$/.test(formulaire.email)) erreursValidees.email = "Adresse e-mail invalide.";
+    if (formulaire.password.length < 6) erreursValidees.password = "Au moins 6 caractères.";
+    if (formulaire.password !== formulaire.confirmation) erreursValidees.confirmation = "Les mots de passe ne correspondent pas.";
+    setErreurs(erreursValidees);
+    if (Object.keys(erreursValidees).length) return;
 
-    setLoading(true);
+    definirChargement(true);
     setErreurGlobale("");
     try {
-      const { confirmation, ...donnees } = form;
-      await register(donnees);              // crée le compte puis connecte
-      navigate("/", { replace: true });
-    } catch (err) {
-      setErreurs(getFieldErrors(err));
-      setErreurGlobale(getErrorMessage(err));
+      const { confirmation, ...donnees } = formulaire;
+      await register(donnees);
+      naviguer("/", { replace: true });
+    } catch (erreurCapture) {
+      setErreurs(getFieldErrors(erreurCapture));
+      setErreurGlobale(getErrorMessage(erreurCapture));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
   }
 
-  const champ = (name, label, type = "text") => (
+  const champ = (nomChamp, libelle, type = "text") => (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} value={form[name]} onChange={change} />
-      {erreurs[name] && <p className="field-error">{erreurs[name]}</p>}
+      <label htmlFor={nomChamp}>{libelle}</label>
+      <input id={nomChamp} name={nomChamp} type={type} value={formulaire[nomChamp]} onChange={change} />
+      {erreurs[nomChamp] && <p className="field-error">{erreurs[nomChamp]}</p>}
     </div>
   );
 
@@ -74,8 +74,8 @@ export default function Register() {
             {champ("password", "Mot de passe", "password")}
             {champ("confirmation", "Confirmer le mot de passe", "password")}
           </div>
-          <button className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? "Création..." : "Créer mon compte"}
+          <button className="btn btn-primary btn-block" disabled={chargement}>
+            {chargement ? "Création..." : "Créer mon compte"}
           </button>
           <p className="auth-switch">Déjà inscrit ? <Link to="/login">Se connecter</Link></p>
         </form>

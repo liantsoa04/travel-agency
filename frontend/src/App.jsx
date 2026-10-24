@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -24,15 +25,15 @@ import MyReservations from "./pages/client/MyReservations";
 import Profile from "./pages/client/Profile";
 
 export default function App() {
+  const { user: utilisateur } = useAuth();
+
   return (
     <Routes>
-      {/* Connexion / inscription */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* ESPACE CLIENT */}
       <Route element={<ClientLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={utilisateur ? <Home /> : <Navigate to="/login" replace />} />
         <Route path="/voyages" element={<Voyages />} />
         <Route path="/voyages/:id" element={<VoyageDetails />} />
         <Route path="/voyages/:id/reserver" element={<ProtectedRoute clientOnly><Reservation /></ProtectedRoute>} />
@@ -40,7 +41,6 @@ export default function App() {
         <Route path="/profil" element={<ProtectedRoute clientOnly><Profile /></ProtectedRoute>} />
       </Route>
 
-      {/* ESPACE ADMIN / EMPLOYÉ */}
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="voyages" element={<AdminVoyages />} />

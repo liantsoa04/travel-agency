@@ -1,6 +1,6 @@
-/* =====================================================
-   2. BASE : réglages de départ et textes
-   ===================================================== */
+
+
+
 * { box-sizing: border-box; }
 
 body {
@@ -17,10 +17,10 @@ p { margin: 0 0 0.5rem; }
 a { color: var(--vert); }
 img { max-width: 100%; display: block; }
 
-/* Zone centrée qui limite la largeur du contenu */
+
 .container { width: 100%; max-width: 1150px; margin: 0 auto; padding: 0 1.25rem; }
 
-/* Petites classes utilitaires */
+
 .muted { color: var(--texte-doux); }
 .small { font-size: 0.85rem; }
 
@@ -28,13 +28,13 @@ h1 { font-size: 1.6rem; }
 h2 { font-size: 1.3rem; }
 h3 { font-size: 1.1rem; }
 
-/* Icône SVG : alignée avec le texte */
+
 .icon { flex-shrink: 0; vertical-align: -0.2em; }
 
-/* Contour visible quand on navigue au clavier */
+
 :focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
 
-/* Logo (le composant Logo.jsx) */
+
 .logo { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 1.25rem; font-weight: 700; color: var(--vert-fonce); text-decoration: none; margin: 0; }
 .logo-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--vert); color: #fff; display: flex; align-items: center; justify-content: center; }
 .logo-text span { color: var(--orange); }

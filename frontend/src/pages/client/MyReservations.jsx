@@ -11,7 +11,7 @@ import { Loader, EmptyState, ErrorState } from "../../components/States";
 import { STATUTS_RESERVATION, formatDate, formatPrix } from "../../utils/format";
 
 export default function MyReservations() {
-  const { data, loading, error, reload } = useFetch("/reservations/");
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/reservations/");
   const [aAnnuler, setAAnnuler] = useState(null);
   const [message, setMessage] = useState("");
   const [erreurAction, setErreurAction] = useState("");
@@ -23,9 +23,9 @@ export default function MyReservations() {
       await api.post(`/reservations/${aAnnuler.id}/annuler/`);
       setMessage("Votre réservation a été annulée.");
       setAAnnuler(null);
-      reload();
-    } catch (e) {
-      setErreurAction(getErrorMessage(e));
+      recharger();
+    } catch (evenement) {
+      setErreurAction(getErrorMessage(evenement));
       setAAnnuler(null);
     } finally {
       setEnCours(false);
@@ -39,31 +39,31 @@ export default function MyReservations() {
       <Alert type="success" onClose={() => setMessage("")}>{message}</Alert>
       <Alert type="error" onClose={() => setErreurAction("")}>{erreurAction}</Alert>
 
-      {loading ? <Loader /> : error ? <ErrorState message={error} onRetry={reload} /> :
-        data.length === 0 ? (
+      {chargement ? <Loader /> : erreurApi ? <ErrorState message={erreurApi} onRetry={recharger} /> :
+        donnees.length === 0 ? (
           <EmptyState text="Vous n'avez pas encore de réservation.">
             <Link to="/voyages" className="btn btn-primary">Découvrir les voyages</Link>
           </EmptyState>
         ) : (
           <div className="resa-list">
-            {data.map((r) => (
-              <article key={r.id} className="resa-card">
-                <SmartImage src={r.voyage_image} alt={r.voyage_titre} className="resa-img" />
+            {donnees.map((reservation) => (
+              <article key={reservation.id} className="resa-card">
+                <SmartImage src={reservation.voyage_image} alt={reservation.voyage_titre} className="resa-img" />
                 <div className="resa-body">
                   <div className="resa-top">
-                    <h3>{r.voyage_destination}</h3>
-                    <Badge info={STATUTS_RESERVATION[r.statut]} />
+                    <h3>{reservation.voyage_destination}</h3>
+                    <Badge info={STATUTS_RESERVATION[reservation.statut]} />
                   </div>
-                  <p>{r.voyage_titre}</p>
-                  <p className="muted resa-dates"><Icon name="calendrier" size={15} /> {formatDate(r.voyage_date_depart)} – {formatDate(r.voyage_date_retour)}</p>
+                  <p>{reservation.voyage_titre}</p>
+                  <p className="muted resa-dates"><Icon name="calendrier" size={15} /> {formatDate(reservation.voyage_date_depart)} – {formatDate(reservation.voyage_date_retour)}</p>
                   <div className="resa-bottom">
-                    <span>{r.nombre_personnes} personne(s)</span>
-                    <strong>{formatPrix(r.prix_total)}</strong>
-                    {r.statut !== "annulee" && (
-                      <button className="btn btn-danger-outline btn-sm" onClick={() => setAAnnuler(r)}>Annuler</button>
+                    <span>{reservation.nombre_personnes} personne(s)</span>
+                    <strong>{formatPrix(reservation.prix_total)}</strong>
+                    {reservation.statut !== "annulee" && (
+                      <button className="btn btn-danger-outline btn-sm" onClick={() => setAAnnuler(reservation)}>Annuler</button>
                     )}
                   </div>
-                  <small className="muted">Réservé le {formatDate(r.date_reservation)}</small>
+                  <small className="muted">Réservé le {formatDate(reservation.date_reservation)}</small>
                 </div>
               </article>
             ))}

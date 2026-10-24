@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 
-// Attend que l'utilisateur arrête de taper avant de lancer la recherche
-export default function useDebounce(value, delay = 400) {
-  const [debounced, setDebounced] = useState(value);
+export default function useDebounce(valeur, delai = 400) {
+  const [valeurStabilisee, setDebouncedValue] = useState(valeur);
+
   useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-  return debounced;
+    const minuteur = setTimeout(() => {
+      setDebouncedValue(valeur);
+    }, delai);
+
+    return () => clearTimeout(minuteur);
+  }, [valeur, delai]);
+
+  return valeurStabilisee;
 }

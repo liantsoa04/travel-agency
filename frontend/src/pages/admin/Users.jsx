@@ -14,46 +14,46 @@ import { ROLES, formatDate } from "../../utils/format";
 
 const VIDE = { first_name: "", last_name: "", email: "", role: "employe", password: "" };
 
-function UserForm({ utilisateur, onSaved, onCancel }) {
-  const [form, setForm] = useState(utilisateur ? { ...VIDE, ...utilisateur, password: "" } : VIDE);
+function UserForm({ user: utilisateur, onSaved: apresEnregistrement, onCancel: annulerAction }) {
+  const [formulaire, setForm] = useState(utilisateur ? { ...VIDE, ...utilisateur, password: "" } : VIDE);
   const [erreurs, setErreurs] = useState({});
   const [erreurGlobale, setErreurGlobale] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [chargement, definirChargement] = useState(false);
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (evenement) => setForm({ ...formulaire, [evenement.target.name]: evenement.target.value });
 
-  async function submit(e) {
-    e.preventDefault();
-    const e1 = {};
-    if (!form.first_name.trim()) e1.first_name = "Le prénom est obligatoire.";
-    if (!form.last_name.trim()) e1.last_name = "Le nom est obligatoire.";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) e1.email = "Adresse e-mail invalide.";
-    if (!utilisateur && form.password.length < 6) e1.password = "Mot de passe : 6 caractères minimum.";
-    setErreurs(e1);
-    if (Object.keys(e1).length) return;
+  async function submit(evenement) {
+    evenement.preventDefault();
+    const erreursValidees = {};
+    if (!formulaire.first_name.trim()) erreursValidees.first_name = "Le prénom est obligatoire.";
+    if (!formulaire.last_name.trim()) erreursValidees.last_name = "Le nom est obligatoire.";
+    if (!/^\S+@\S+\.\S+$/.test(formulaire.email)) erreursValidees.email = "Adresse e-mail invalide.";
+    if (!utilisateur && formulaire.password.length < 6) erreursValidees.password = "Mot de passe : 6 caractères minimum.";
+    setErreurs(erreursValidees);
+    if (Object.keys(erreursValidees).length) return;
 
-    setLoading(true);
+    definirChargement(true);
     setErreurGlobale("");
-    const donnees = { first_name: form.first_name, last_name: form.last_name, email: form.email, role: form.role };
-    if (form.password) donnees.password = form.password;   // vide en modification = on garde l'ancien
+    const donnees = { first_name: formulaire.first_name, last_name: formulaire.last_name, email: formulaire.email, role: formulaire.role };
+    if (formulaire.password) donnees.password = formulaire.password;
     try {
       if (utilisateur) await api.patch(`/auth/users/${utilisateur.id}/`, donnees);
       else await api.post("/auth/users/", donnees);
-      onSaved();
-    } catch (err) {
-      setErreurs(getFieldErrors(err));
-      setErreurGlobale(getErrorMessage(err));
+      apresEnregistrement();
+    } catch (erreurCapture) {
+      setErreurs(getFieldErrors(erreurCapture));
+      setErreurGlobale(getErrorMessage(erreurCapture));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
   }
 
-  const champ = (name, label, type = "text", aide) => (
+  const champ = (nomChamp, libelle, type = "text", aide) => (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} value={form[name]} onChange={change} />
+      <label htmlFor={nomChamp}>{libelle}</label>
+      <input id={nomChamp} name={nomChamp} type={type} value={formulaire[nomChamp]} onChange={change} />
       {aide && <p className="muted small">{aide}</p>}
-      {erreurs[name] && <p className="field-error">{erreurs[name]}</p>}
+      {erreurs[nomChamp] && <p className="field-error">{erreurs[nomChamp]}</p>}
     </div>
   );
 
@@ -66,16 +66,16 @@ function UserForm({ utilisateur, onSaved, onCancel }) {
         {champ("email", "Adresse e-mail", "email")}
         <div className="form-group">
           <label htmlFor="role">Rôle</label>
-          <select id="role" name="role" value={form.role} onChange={change}>
-            {Object.entries(ROLES).map(([v, r]) => <option key={v} value={v}>{r.label}</option>)}
+          <select id="role" name="role" value={formulaire.role} onChange={change}>
+            {Object.entries(ROLES).map(([voyage, reservation]) => <option key={voyage} value={voyage}>{reservation.label}</option>)}
           </select>
         </div>
       </div>
       {champ("password", utilisateur ? "Nouveau mot de passe" : "Mot de passe", "password",
         utilisateur ? "Laissez vide pour conserver le mot de passe actuel." : "")}
       <div className="form-actions">
-        <button type="button" className="btn btn-outline" onClick={onCancel}>Annuler</button>
-        <button className="btn btn-primary" disabled={loading}>{loading ? "Enregistrement..." : "Enregistrer"}</button>
+        <button type="button" className="btn btn-outline" onClick={annulerAction}>Annuler</button>
+        <button className="btn btn-primary" disabled={chargement}>{chargement ? "Enregistrement..." : "Enregistrer"}</button>
       </div>
     </form>
   );
@@ -83,11 +83,11 @@ function UserForm({ utilisateur, onSaved, onCancel }) {
 
 export default function Users() {
   const { user: moi } = useAuth();
-  const [search, setSearch] = useState("");
+  const [search, definirRecherche] = useState("");
   const [role, setRole] = useState("");
   const recherche = useDebounce(search);
-  const { data, loading, error, reload } = useFetch("/auth/users/", { search: recherche, role });
-  const pagination = usePagination(data ?? [], JSON.stringify([recherche, role]));
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/auth/users/", { search: recherche, role });
+  const pagination = usePagination(donnees ?? [], JSON.stringify([recherche, role]));
 
   const [formUser, setFormUser] = useState(undefined);
   const [aSupprimer, setASupprimer] = useState(null);
@@ -98,7 +98,7 @@ export default function Users() {
   function apresEnregistrement() {
     setMessage(formUser ? "Utilisateur modifié avec succès." : "Utilisateur créé avec succès.");
     setFormUser(undefined);
-    reload();
+    recharger();
   }
 
   async function supprimer() {
@@ -107,9 +107,9 @@ export default function Users() {
       await api.delete(`/auth/users/${aSupprimer.id}/`);
       setMessage("Utilisateur supprimé.");
       setASupprimer(null);
-      reload();
-    } catch (e) {
-      setErreurAction(getErrorMessage(e));
+      recharger();
+    } catch (evenement) {
+      setErreurAction(getErrorMessage(evenement));
       setASupprimer(null);
     } finally {
       setSuppression(false);
@@ -119,10 +119,10 @@ export default function Users() {
   return (
     <div>
       <div className="toolbar">
-        <SearchBar value={search} onChange={setSearch} placeholder="Nom ou e-mail..." />
-        <select value={role} onChange={(e) => setRole(e.target.value)} aria-label="Rôle">
+        <SearchBar value={search} onChange={definirRecherche} placeholder="Nom ou e-mail..." />
+        <select value={role} onChange={(evenement) => setRole(evenement.target.value)} aria-label="Rôle">
           <option value="">Tous les rôles</option>
-          {Object.entries(ROLES).map(([v, r]) => <option key={v} value={v}>{r.label}</option>)}
+          {Object.entries(ROLES).map(([voyage, reservation]) => <option key={voyage} value={voyage}>{reservation.label}</option>)}
         </select>
         <button className="btn btn-primary" onClick={() => setFormUser(null)}>+ Ajouter un utilisateur</button>
       </div>
@@ -131,24 +131,24 @@ export default function Users() {
       <Alert type="error" onClose={() => setErreurAction("")}>{erreurAction}</Alert>
 
       <section className="panel">
-        {loading ? <Loader /> : error ? <ErrorState message={error} onRetry={reload} /> :
-          data.length === 0 ? <EmptyState text="Aucun utilisateur trouvé." /> : (
+        {chargement ? <Loader /> : erreurApi ? <ErrorState message={erreurApi} onRetry={recharger} /> :
+          donnees.length === 0 ? <EmptyState text="Aucun utilisateur trouvé." /> : (
             <>
             <div className="table-wrap">
               <table className="table">
                 <thead><tr><th>Nom</th><th>E-mail</th><th>Rôle</th><th>Inscrit le</th><th>Actions</th></tr></thead>
                 <tbody>
-                  {pagination.items.map((u) => (
-                    <tr key={u.id}>
-                      <td><strong>{u.first_name} {u.last_name}</strong></td>
-                      <td>{u.email}</td>
-                      <td><Badge info={ROLES[u.role]} /></td>
-                      <td>{formatDate(u.date_joined)}</td>
+                  {pagination.items.map((utilisateur) => (
+                    <tr key={utilisateur.id}>
+                      <td><strong>{utilisateur.first_name} {utilisateur.last_name}</strong></td>
+                      <td>{utilisateur.email}</td>
+                      <td><Badge info={ROLES[utilisateur.role]} /></td>
+                      <td>{formatDate(utilisateur.date_joined)}</td>
                       <td>
                         <div className="actions">
-                          <button className="btn btn-outline btn-sm" onClick={() => setFormUser(u)}>Modifier</button>
-                          {u.id !== moi.id && (
-                            <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(u)}>Supprimer</button>
+                          <button className="btn btn-outline btn-sm" onClick={() => setFormUser(utilisateur)}>Modifier</button>
+                          {utilisateur.id !== moi.id && (
+                            <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(utilisateur)}>Supprimer</button>
                           )}
                         </div>
                       </td>
@@ -157,7 +157,7 @@ export default function Users() {
                 </tbody>
               </table>
             </div>
-            <Pagination {...pagination} count={data.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
+            <Pagination {...pagination} count={donnees.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
             </>
           )}
       </section>

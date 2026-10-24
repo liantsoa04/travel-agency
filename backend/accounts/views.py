@@ -9,12 +9,12 @@ from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 
 
 class LoginView(TokenObtainPairView):
-    """POST /api/auth/login/  {email, password} -> {access, refresh, user}"""
+                                                                             
     serializer_class = LoginSerializer
 
 
 class RegisterView(generics.CreateAPIView):
-    """POST /api/auth/register/ -> crée un compte client"""
+                                                           
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -26,7 +26,7 @@ class RegisterView(generics.CreateAPIView):
 
 
 class MeView(generics.RetrieveAPIView):
-    """GET /api/auth/me/ -> informations de l'utilisateur connecté"""
+                                                                     
     serializer_class = UserSerializer
 
     def get_object(self):
@@ -34,7 +34,7 @@ class MeView(generics.RetrieveAPIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """CRUD des utilisateurs : réservé à l'admin."""
+                                                    
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]

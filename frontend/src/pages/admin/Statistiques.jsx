@@ -5,12 +5,12 @@ import { ReservationsChart, RevenueChart } from "../../components/Charts";
 import { STATUTS_VOYAGE } from "../../utils/format";
 
 export default function Statistiques() {
-  const { data, loading, error, reload } = useFetch("/dashboard/stats/");
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/dashboard/stats/");
 
-  if (loading) return <Loader />;
-  if (error) return <ErrorState message={error} onRetry={reload} />;
+  if (chargement) return <Loader />;
+  if (erreurApi) return <ErrorState message={erreurApi} onRetry={recharger} />;
 
-  const maxReservations = Math.max(1, ...data.voyages_populaires.map((v) => v.nb_reservations));
+  const maximumReservations = Math.max(1, ...donnees.voyages_populaires.map((voyage) => voyage.nb_reservations));
 
   return (
     <div>
@@ -18,37 +18,37 @@ export default function Statistiques() {
         <section className="panel">
           <h2>Réservations par mois</h2>
           <p className="muted small">Les réservations annulées ne sont pas comptées.</p>
-          <ReservationsChart data={data.mensuel} />
+          <ReservationsChart data={donnees.mensuel} />
         </section>
         <section className="panel">
           <h2>Revenus par mois</h2>
           <p className="muted small">Seules les réservations confirmées sont comptées.</p>
-          <RevenueChart data={data.mensuel} />
+          <RevenueChart data={donnees.mensuel} />
         </section>
       </div>
 
       <div className="grid-2">
         <section className="panel">
           <h2>Voyages les plus réservés</h2>
-          {data.voyages_populaires.map((v) => (
-            <div key={v.id} className="bar-row">
-              <div className="bar-label"><strong>{v.titre}</strong><span>{v.nb_reservations}</span></div>
-              <div className="bar-track"><div className="bar-fill" style={{ width: `${(v.nb_reservations / maxReservations) * 100}%` }} /></div>
+          {donnees.voyages_populaires.map((voyage) => (
+            <div key={voyage.id} className="bar-row">
+              <div className="bar-label"><strong>{voyage.titre}</strong><span>{voyage.nb_reservations}</span></div>
+              <div className="bar-track"><div className="bar-fill" style={{ width: `${(voyage.nb_reservations / maximumReservations) * 100}%` }} /></div>
             </div>
           ))}
         </section>
 
         <section className="panel">
           <h2>Occupation : voyages presque complets</h2>
-          {data.occupation.length === 0 && <p className="muted">Aucun voyage presque complet.</p>}
-          {data.occupation.map((v) => (
-            <div key={v.id} className="bar-row">
+          {donnees.occupation.length === 0 && <p className="muted">Aucun voyage presque complet.</p>}
+          {donnees.occupation.map((voyage) => (
+            <div key={voyage.id} className="bar-row">
               <div className="bar-label">
-                <strong>{v.titre}</strong>
-                <span><Badge info={STATUTS_VOYAGE[v.statut]} /> {v.taux}%</span>
+                <strong>{voyage.titre}</strong>
+                <span><Badge info={STATUTS_VOYAGE[voyage.statut]} /> {voyage.taux}%</span>
               </div>
-              <div className="bar-track"><div className="bar-fill bar-orange" style={{ width: `${v.taux}%` }} /></div>
-              <small className="muted">{v.places_disponibles} place(s) restante(s) sur {v.nombre_places}</small>
+              <div className="bar-track"><div className="bar-fill bar-orange" style={{ width: `${voyage.taux}%` }} /></div>
+              <small className="muted">{voyage.places_disponibles} place(s) restante(s) sur {voyage.nombre_places}</small>
             </div>
           ))}
         </section>

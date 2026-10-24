@@ -14,15 +14,15 @@ import { Loader, EmptyState, ErrorState } from "../../components/States";
 import { CATEGORIES, STATUTS_VOYAGE, categorieLabel, formatDate, formatPrix } from "../../utils/format";
 
 export default function AdminVoyages() {
-  const [search, setSearch] = useState("");
+  const [search, definirRecherche] = useState("");
   const [categorie, setCategorie] = useState("");
   const [statut, setStatut] = useState("");
   const recherche = useDebounce(search);
 
-  const { data, loading, error, reload } = useFetch("/voyages/", { search: recherche, categorie, statut });
-  const pagination = usePagination(data ?? [], JSON.stringify([recherche, categorie, statut]));
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/voyages/", { search: recherche, categorie, statut });
+  const pagination = usePagination(donnees ?? [], JSON.stringify([recherche, categorie, statut]));
 
-  const [formVoyage, setFormVoyage] = useState(undefined);   // undefined = fermé, null = ajout, objet = modification
+  const [formVoyage, setFormVoyage] = useState(undefined);
   const [detail, setDetail] = useState(null);
   const [aSupprimer, setASupprimer] = useState(null);
   const [message, setMessage] = useState("");
@@ -32,7 +32,7 @@ export default function AdminVoyages() {
   function apresEnregistrement() {
     setMessage(formVoyage ? "Voyage modifié avec succès." : "Voyage ajouté avec succès.");
     setFormVoyage(undefined);
-    reload();
+    recharger();
   }
 
   async function supprimer() {
@@ -41,9 +41,9 @@ export default function AdminVoyages() {
       await api.delete(`/voyages/${aSupprimer.id}/`);
       setMessage("Voyage supprimé.");
       setASupprimer(null);
-      reload();
-    } catch (e) {
-      setErreurAction(getErrorMessage(e));
+      recharger();
+    } catch (evenement) {
+      setErreurAction(getErrorMessage(evenement));
       setASupprimer(null);
     } finally {
       setSuppression(false);
@@ -53,14 +53,14 @@ export default function AdminVoyages() {
   return (
     <div>
       <div className="toolbar">
-        <SearchBar value={search} onChange={setSearch} placeholder="Titre, destination, pays, ville..." />
-        <select value={categorie} onChange={(e) => setCategorie(e.target.value)} aria-label="Catégorie">
+        <SearchBar value={search} onChange={definirRecherche} placeholder="Titre, destination, pays, ville..." />
+        <select value={categorie} onChange={(evenement) => setCategorie(evenement.target.value)} aria-label="Catégorie">
           <option value="">Toutes les catégories</option>
-          {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          {CATEGORIES.map((categorie) => <option key={categorie.value} value={categorie.value}>{categorie.label}</option>)}
         </select>
-        <select value={statut} onChange={(e) => setStatut(e.target.value)} aria-label="Statut">
+        <select value={statut} onChange={(evenement) => setStatut(evenement.target.value)} aria-label="Statut">
           <option value="">Tous les statuts</option>
-          {Object.entries(STATUTS_VOYAGE).map(([v, s]) => <option key={v} value={v}>{s.label}</option>)}
+          {Object.entries(STATUTS_VOYAGE).map(([voyage, statut]) => <option key={voyage} value={voyage}>{statut.label}</option>)}
         </select>
         <button className="btn btn-primary" onClick={() => setFormVoyage(null)}>+ Ajouter un voyage</button>
       </div>
@@ -69,8 +69,8 @@ export default function AdminVoyages() {
       <Alert type="error" onClose={() => setErreurAction("")}>{erreurAction}</Alert>
 
       <section className="panel">
-        {loading ? <Loader /> : error ? <ErrorState message={error} onRetry={reload} /> :
-          data.length === 0 ? <EmptyState text="Aucun voyage trouvé." /> : (
+        {chargement ? <Loader /> : erreurApi ? <ErrorState message={erreurApi} onRetry={recharger} /> :
+          donnees.length === 0 ? <EmptyState text="Aucun voyage trouvé." /> : (
             <>
             <div className="table-wrap">
               <table className="table">
@@ -78,26 +78,26 @@ export default function AdminVoyages() {
                   <tr><th>Voyage</th><th>Dates</th><th>Prix</th><th>Places</th><th>Statut</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
-                  {pagination.items.map((v) => (
-                    <tr key={v.id}>
+                  {pagination.items.map((voyage) => (
+                    <tr key={voyage.id}>
                       <td>
                         <div className="cell-voyage">
-                          <SmartImage src={v.image} alt="" className="thumb" />
+                          <SmartImage src={voyage.image} alt="" className="thumb" />
                           <div>
-                            <strong>{v.titre}</strong>
-                            <small>{v.ville}, {v.pays} · {categorieLabel(v.categorie)}</small>
+                            <strong>{voyage.titre}</strong>
+                            <small>{voyage.ville}, {voyage.pays} · {categorieLabel(voyage.categorie)}</small>
                           </div>
                         </div>
                       </td>
-                      <td>{formatDate(v.date_depart)}<br /><small>au {formatDate(v.date_retour)}</small></td>
-                      <td>{formatPrix(v.prix)}</td>
-                      <td>{v.places_disponibles} / {v.nombre_places}</td>
-                      <td><Badge info={STATUTS_VOYAGE[v.statut]} /></td>
+                      <td>{formatDate(voyage.date_depart)}<br /><small>au {formatDate(voyage.date_retour)}</small></td>
+                      <td>{formatPrix(voyage.prix)}</td>
+                      <td>{voyage.places_disponibles} / {voyage.nombre_places}</td>
+                      <td><Badge info={STATUTS_VOYAGE[voyage.statut]} /></td>
                       <td>
                         <div className="actions">
-                          <button className="btn btn-outline btn-sm" onClick={() => setDetail(v)}>Détails</button>
-                          <button className="btn btn-outline btn-sm" onClick={() => setFormVoyage(v)}>Modifier</button>
-                          <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(v)}>Supprimer</button>
+                          <button className="btn btn-outline btn-sm" onClick={() => setDetail(voyage)}>Détails</button>
+                          <button className="btn btn-outline btn-sm" onClick={() => setFormVoyage(voyage)}>Modifier</button>
+                          <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(voyage)}>Supprimer</button>
                         </div>
                       </td>
                     </tr>
@@ -105,7 +105,7 @@ export default function AdminVoyages() {
                 </tbody>
               </table>
             </div>
-            <Pagination {...pagination} count={data.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
+            <Pagination {...pagination} count={donnees.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
             </>
           )}
       </section>

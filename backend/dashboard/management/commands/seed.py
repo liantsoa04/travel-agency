@@ -1,8 +1,8 @@
-"""
-Remplit la base avec des données fictives réalistes.
-Utilisation :  python manage.py seed            (ne fait rien si des voyages existent déjà)
-               python manage.py seed --reset    (efface les données de démonstration puis recrée tout)
-"""
+   
+                                                    
+                                                                                           
+                                                                                                      
+   
 from datetime import date, datetime, time, timedelta
 
 from django.core.management.base import BaseCommand
@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
         aujourdhui = date.today()
 
-        # ---------- Utilisateurs ----------
+
         def creer_user(email, mot_de_passe, prenom, nom, role, **extra):
             return User.objects.create_user(
                 username=email, email=email, password=mot_de_passe,
@@ -55,7 +55,7 @@ class Command(BaseCommand):
         creer_user("admin@agence.com", "Admin123!", "Hery", "Rakoto", "admin", is_staff=True, is_superuser=True)
         creer_user("employe@agence.com", "Employe123!", "Miora", "Randria", "employe", is_staff=True)
 
-        # ---------- Clients ----------
+
         donnees_clients = [
             ("client@agence.com", "Sarah", "Rasoanaivo", "034 12 345 67", "Lot II A 12, Antananarivo"),
             ("tiana@agence.com", "Tiana", "Andrianina", "032 45 678 90", "Ambohimanarina, Antananarivo"),
@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 user = creer_user(email, "Client123!", prenom, nom, "client")
             clients.append(Client.objects.create(user=user, nom=nom, prenom=prenom, email=email, telephone=tel, adresse=adresse))
 
-        # ---------- Voyages ----------
+
         def j(jours):
             return aujourdhui + timedelta(days=jours)
 
@@ -94,7 +94,7 @@ class Command(BaseCommand):
                 categorie=cat, image=img(photo),
             ))
 
-        # ---------- Réservations : (client, voyage, personnes, statut, mois en arrière) ----------
+
         reservations = [
             (0, 0, 2, "confirmee", 0), (1, 0, 3, "confirmee", 1), (2, 0, 4, "confirmee", 2),
             (3, 1, 4, "confirmee", 1), (4, 1, 3, "confirmee", 0), (5, 1, 2, "confirmee", 3),
@@ -112,10 +112,10 @@ class Command(BaseCommand):
         for i, (c, v, nb, statut, retour) in enumerate(reservations):
             r = Reservation.objects.create(client=clients[c], voyage=voyages[v], nombre_personnes=nb)
             if statut == "confirmee":
-                r.confirmer()       # diminue les places et met à jour le statut du voyage
+                r.confirmer()
             elif statut == "annulee":
                 r.annuler()
-            # On répartit les dates sur les 6 derniers mois pour que les graphiques soient parlants
+
             debut = mois_en_arriere(aujourdhui, retour)
             decalage = i % 27
             if retour == 0:

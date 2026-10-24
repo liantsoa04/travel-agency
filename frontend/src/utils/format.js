@@ -1,11 +1,11 @@
-export const formatPrix = (n) =>
-  `${Number(n).toLocaleString("fr-FR", { maximumFractionDigits: 0 })} €`;
+export const formatPrix = (prix) =>
+  `${Number(prix).toLocaleString("fr-FR", { maximumFractionDigits: 0 })} Ar`;
 
-export const formatDate = (d) =>
-  d ? new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
+export const formatDate = (date) =>
+  date ? new Date(date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
 
-export const formatDateCourte = (d) =>
-  d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "";
+export const formatDateCourte = (date) =>
+  date ? new Date(date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "";
 
 export const CATEGORIES = [
   { value: "plage", label: "Plage" },
@@ -34,4 +34,4 @@ export const ROLES = {
   client: { label: "Client", classe: "badge-grey" },
 };
 
-export const categorieLabel = (v) => CATEGORIES.find((c) => c.value === v)?.label || v;
+export const categorieLabel = (valeur) => CATEGORIES.find((categorie) => categorie.value === valeur)?.label || valeur;

@@ -4,17 +4,17 @@ import { useAuth } from "../context/AuthContext";
 import Icon from "./Icon";
 import Logo from "./Logo";
 
-// Barre de navigation du côté client
+
 export default function Navbar() {
-  const { user, isStaff, logout } = useAuth();
+  const { user: utilisateur, isStaff: estPersonnel, logout } = useAuth();
   const [ouvert, setOuvert] = useState(false);
-  const navigate = useNavigate();
+  const naviguer = useNavigate();
 
   const fermer = () => setOuvert(false);
   const seDeconnecter = () => {
     logout();
     fermer();
-    navigate("/");
+    naviguer("/");
   };
 
   return (
@@ -29,15 +29,15 @@ export default function Navbar() {
         <nav className={`nav-links ${ouvert ? "open" : ""}`}>
           <NavLink to="/" end onClick={fermer}>Accueil</NavLink>
           <NavLink to="/voyages" onClick={fermer}>Voyages</NavLink>
-          {user?.role === "client" && (
+          {utilisateur?.role === "client" && (
             <>
               <NavLink to="/mes-reservations" onClick={fermer}>Mes réservations</NavLink>
               <NavLink to="/profil" onClick={fermer}>Mon profil</NavLink>
             </>
           )}
-          {isStaff && <NavLink to="/admin" onClick={fermer}>Espace admin</NavLink>}
+          {estPersonnel && <NavLink to="/admin" onClick={fermer}>Espace admin</NavLink>}
 
-          {user ? (
+          {utilisateur ? (
             <button className="btn btn-outline btn-sm" onClick={seDeconnecter}>Déconnexion</button>
           ) : (
             <Link to="/login" className="btn btn-primary btn-sm" onClick={fermer}>Connexion</Link>

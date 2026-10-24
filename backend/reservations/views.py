@@ -11,14 +11,14 @@ from .serializers import ReservationSerializer
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
-    """
-    Réservations.
-    - Client : voit et crée uniquement SES réservations, peut les annuler
-    - Admin / employé : voient tout, peuvent confirmer et annuler
-    """
+       
+                 
+                                                                         
+                                                                 
+       
     serializer_class = ReservationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ["get", "post", "delete", "head", "options"]   # pas de PUT/PATCH
+    http_method_names = ["get", "post", "delete", "head", "options"]
 
     def get_permissions(self):
         if self.action in ("destroy", "confirmer"):
@@ -30,7 +30,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
         queryset = Reservation.objects.select_related("client", "voyage")
 
         if user.role == "client":
-            queryset = queryset.filter(client__user=user)     # seulement les siennes
+            queryset = queryset.filter(client__user=user)
 
         p = self.request.query_params
         if p.get("statut"):
@@ -57,7 +57,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         if instance.statut == "confirmee":
-            instance.annuler()          # rend les places avant de supprimer
+            instance.annuler()
         instance.delete()
 
     @action(detail=True, methods=["post"])
@@ -71,7 +71,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def annuler(self, request, pk=None):
-        reservation = self.get_object()   # un client ne trouve que ses propres réservations
+        reservation = self.get_object()
         try:
             reservation.annuler()
         except ReservationError as erreur:

@@ -8,13 +8,13 @@ import { Pagination, usePagination } from "../../components/Pagination";
 import { STATUTS_RESERVATION, formatDate, formatPrix } from "../../utils/format";
 
 export default function Dashboard() {
-  const { data, loading, error, reload } = useFetch("/dashboard/stats/");
-  const pagination = usePagination(data?.reservations_recentes ?? []);
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/dashboard/stats/");
+  const pagination = usePagination(donnees?.reservations_recentes ?? []);
 
-  if (loading) return <Loader />;
-  if (error) return <ErrorState message={error} onRetry={reload} />;
+  if (chargement) return <Loader />;
+  if (erreurApi) return <ErrorState message={erreurApi} onRetry={recharger} />;
 
-  const { cartes, mensuel, voyages_populaires, reservations_recentes, alertes } = data;
+  const { cartes, mensuel, voyages_populaires, reservations_recentes, alertes } = donnees;
 
   return (
     <div>
@@ -40,14 +40,14 @@ export default function Dashboard() {
         <section className="panel">
           <h2>Voyages populaires</h2>
           <ul className="rank-list">
-            {voyages_populaires.map((v, i) => (
-              <li key={v.id}>
-                <span className="rank">{i + 1}</span>
+            {voyages_populaires.map((voyage, indice) => (
+              <li key={voyage.id}>
+                <span className="rank">{indice + 1}</span>
                 <div>
-                  <strong>{v.titre}</strong>
-                  <small>{v.destination}</small>
+                  <strong>{voyage.titre}</strong>
+                  <small>{voyage.destination}</small>
                 </div>
-                <span className="rank-count">{v.nb_reservations} rés.</span>
+                <span className="rank-count">{voyage.nb_reservations} rés.</span>
               </li>
             ))}
           </ul>
@@ -56,8 +56,8 @@ export default function Dashboard() {
         <section className="panel">
           <h2>Alertes importantes</h2>
           {alertes.length === 0 && <p className="muted">Aucune alerte pour le moment.</p>}
-          {alertes.map((a, i) => (
-            <p key={i} className={`alert-line alert-line-${a.type}`}>{a.message}</p>
+          {alertes.map((a, indice) => (
+            <p key={indice} className={`alert-line alert-line-${a.type}`}>{a.message}</p>
           ))}
         </section>
       </div>
@@ -73,14 +73,14 @@ export default function Dashboard() {
               <tr><th>Client</th><th>Voyage</th><th>Date</th><th>Personnes</th><th>Total</th><th>Statut</th></tr>
             </thead>
             <tbody>
-              {pagination.items.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.client_nom}</td>
-                  <td>{r.voyage_titre}</td>
-                  <td>{formatDate(r.date_reservation)}</td>
-                  <td>{r.nombre_personnes}</td>
-                  <td>{formatPrix(r.prix_total)}</td>
-                  <td><Badge info={STATUTS_RESERVATION[r.statut]} /></td>
+              {pagination.items.map((reservation) => (
+                <tr key={reservation.id}>
+                  <td>{reservation.client_nom}</td>
+                  <td>{reservation.voyage_titre}</td>
+                  <td>{formatDate(reservation.date_reservation)}</td>
+                  <td>{reservation.nombre_personnes}</td>
+                  <td>{formatPrix(reservation.prix_total)}</td>
+                  <td><Badge info={STATUTS_RESERVATION[reservation.statut]} /></td>
                 </tr>
               ))}
             </tbody>

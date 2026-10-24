@@ -1,6 +1,6 @@
-// Toutes les icônes de l'application, au même endroit.
-// Utilisation : <Icon name="avion" size={18} />
-// Ce sont des icônes SVG « traits fins » : elles prennent la couleur du texte (currentColor).
+
+
+
 
 const ICONES = {
   dashboard: (
@@ -173,12 +173,12 @@ const ICONES = {
   ),
 };
 
-export default function Icon({ name, size = 18 }) {
+export default function Icon({ name: nomChamp, taille = 18 }) {
   return (
     <svg
       className="icon"
-      width={size}
-      height={size}
+      width={taille}
+      height={taille}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -187,7 +187,7 @@ export default function Icon({ name, size = 18 }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {ICONES[name]}
+      {ICONES[nomChamp]}
     </svg>
   );
 }

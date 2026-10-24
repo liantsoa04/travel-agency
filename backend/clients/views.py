@@ -9,11 +9,11 @@ from .serializers import ClientSerializer, ClientProfileSerializer
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    """
-    CRUD des clients (admin / employé).
-    + /api/clients/me/            : profil du client connecté
-    + /api/clients/<id>/reservations/ : réservations d'un client
-    """
+       
+                                       
+                                                             
+                                                                
+       
     serializer_class = ClientSerializer
     permission_classes = [IsAdminOrEmployee]
 
@@ -34,12 +34,12 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get", "patch"])
     def me(self, request):
-        """Le client voit et modifie sa propre fiche."""
+                                                        
         user = request.user
         if user.role != "client":
             return Response({"detail": "Cette page est réservée aux clients."}, status=403)
 
-        # Si la fiche n'existe pas encore, on la crée à partir du compte
+
         client, _ = Client.objects.get_or_create(
             user=user,
             defaults={"nom": user.last_name, "prenom": user.first_name, "email": user.email},
@@ -49,7 +49,7 @@ class ClientViewSet(viewsets.ModelViewSet):
             serializer = ClientProfileSerializer(client, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            # on garde le nom du compte synchronisé avec la fiche
+
             user.first_name = client.prenom
             user.last_name = client.nom
             user.save()
@@ -59,7 +59,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def reservations(self, request, pk=None):
-        from reservations.serializers import ReservationSerializer  # import ici pour éviter une boucle
+        from reservations.serializers import ReservationSerializer
         client = self.get_object()
         serializer = ReservationSerializer(client.reservations.all().order_by("-date_reservation"), many=True)
         return Response(serializer.data)

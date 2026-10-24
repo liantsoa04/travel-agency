@@ -10,12 +10,12 @@ from .serializers import VoyageSerializer
 
 
 class VoyageViewSet(viewsets.ModelViewSet):
-    """
-    Voyages.
-    - Lecture (GET) : ouverte à tous (même sans compte)
-    - Création / modification / suppression : admin ou employé
-    Filtres possibles : ?search= &categorie= &prix_min= &prix_max= &date= &disponible=true &statut=
-    """
+       
+            
+                                                       
+                                                              
+                                                                                                   
+       
     serializer_class = VoyageSerializer
     permission_classes = [IsStaffOrReadOnly]
 
@@ -38,14 +38,14 @@ class VoyageViewSet(viewsets.ModelViewSet):
         if p.get("prix_max"):
             queryset = queryset.filter(prix__lte=p["prix_max"])
         if p.get("date"):
-            queryset = queryset.filter(date_depart__gte=p["date"])   # voyages partant à partir de cette date
+            queryset = queryset.filter(date_depart__gte=p["date"])                                           
         if p.get("disponible") == "true":
             queryset = queryset.filter(places_disponibles__gt=0, date_retour__gte=date.today())
         return queryset
 
     @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny])
     def populaires(self, request):
-        """Voyages les plus réservés (les réservations annulées ne comptent pas)."""
+                                                                                    
         voyages = (
             Voyage.objects
             .annotate(nb_reservations=Count("reservations", filter=~Q(reservations__statut="annulee")))

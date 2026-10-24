@@ -9,10 +9,10 @@ import { Loader, ErrorState } from "../../components/States";
 import { formatDate, formatPrix } from "../../utils/format";
 
 export default function Reservation() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { data: voyage, loading, error, reload } = useFetch(`/voyages/${id}/`);
+  const { id: identifiant } = useParams();
+  const naviguer = useNavigate();
+  const { user: utilisateur } = useAuth();
+  const { data: voyage, loading: chargement, error: erreurApi, reload: recharger } = useFetch(`/voyages/${identifiant}/`);
   const { data: profil } = useFetch("/clients/me/");
 
   const [nombre, setNombre] = useState(1);
@@ -20,16 +20,16 @@ export default function Reservation() {
   const [succes, setSucces] = useState("");
   const [envoi, setEnvoi] = useState(false);
 
-  if (loading) return <Loader />;
-  if (error) return <ErrorState message={error} onRetry={reload} />;
+  if (chargement) return <Loader />;
+  if (erreurApi) return <ErrorState message={erreurApi} onRetry={recharger} />;
 
   const total = Number(voyage.prix) * Number(nombre || 0);
 
-  async function submit(e) {
-    e.preventDefault();
+  async function submit(evenement) {
+    evenement.preventDefault();
     setErreur("");
 
-    // Validations
+
     if (!(Number(nombre) >= 1)) return setErreur("Le nombre de personnes doit être supérieur à 0.");
     if (voyage.places_disponibles === 0) return setErreur("Ce voyage est complet.");
     if (Number(nombre) > voyage.places_disponibles) return setErreur("Nombre de places disponibles insuffisant.");
@@ -38,9 +38,9 @@ export default function Reservation() {
     try {
       await api.post("/reservations/", { voyage: voyage.id, nombre_personnes: Number(nombre) });
       setSucces("Réservation effectuée avec succès. Elle sera confirmée par notre équipe.");
-      setTimeout(() => navigate("/mes-reservations"), 1800);
-    } catch (err) {
-      setErreur(getErrorMessage(err));
+      setTimeout(() => naviguer("/mes-reservations"), 1800);
+    } catch (erreurCapture) {
+      setErreur(getErrorMessage(erreurCapture));
       setEnvoi(false);
     }
   }
@@ -54,8 +54,8 @@ export default function Reservation() {
         <form className="card-form" onSubmit={submit} noValidate>
           <h2>Vos informations</h2>
           <div className="info-box">
-            <p><strong>{user.first_name} {user.last_name}</strong></p>
-            <p>{user.email}</p>
+            <p><strong>{utilisateur.first_name} {utilisateur.last_name}</strong></p>
+            <p>{utilisateur.email}</p>
             {profil?.telephone && <p>{profil.telephone}</p>}
             <small>Pour modifier ces informations, rendez-vous sur <Link to="/profil">Mon profil</Link>.</small>
           </div>
@@ -64,7 +64,7 @@ export default function Reservation() {
             <label htmlFor="nombre">Nombre de personnes</label>
             <div className="stepper">
               <button type="button" onClick={() => setNombre(Math.max(1, Number(nombre) - 1))} aria-label="Moins">−</button>
-              <input id="nombre" type="number" min="1" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+              <input id="nombre" type="number" min="1" value={nombre} onChange={(evenement) => setNombre(evenement.target.value)} />
               <button type="button" onClick={() => setNombre(Number(nombre) + 1)} aria-label="Plus">+</button>
             </div>
             <p className="muted small">{voyage.places_disponibles} place(s) disponible(s)</p>

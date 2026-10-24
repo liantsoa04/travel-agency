@@ -3,7 +3,7 @@ from .models import Client
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    """Utilisé par l'admin / l'employé."""
+                                          
     nombre_reservations = serializers.IntegerField(read_only=True, required=False)
 
     class Meta:
@@ -13,7 +13,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class ClientProfileSerializer(serializers.ModelSerializer):
-    """Utilisé par le client pour son profil (l'e-mail ne peut pas être modifié)."""
+                                                                                    
     class Meta:
         model = Client
         fields = ["id", "nom", "prenom", "email", "telephone", "adresse"]

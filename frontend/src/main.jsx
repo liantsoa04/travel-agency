@@ -4,15 +4,15 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 
-// Les styles sont chargés dans cet ordre (du plus général au plus précis)
-import "./styles/variables.css";   // couleurs, polices, arrondis
-import "./styles/base.css";        // réglages de base + logo
-import "./styles/components.css";  // boutons, formulaires, badges, modales...
-import "./styles/auth.css";        // connexion / inscription
-import "./styles/client.css";      // espace client
-import "./styles/voyages.css";     // cartes de voyages + filtres
-import "./styles/admin.css";       // espace admin
-import "./styles/dashboard.css";   // dashboard + statistiques
+
+import "./styles/variables.css";
+import "./styles/base.css";
+import "./styles/components.css";
+import "./styles/auth.css";
+import "./styles/client.css";
+import "./styles/voyages.css";
+import "./styles/admin.css";
+import "./styles/dashboard.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

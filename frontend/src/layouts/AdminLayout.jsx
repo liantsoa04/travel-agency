@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 
-// Titre et courte description affichés en haut de chaque page admin
+
 const PAGES = {
   "/admin": { titre: "Tableau de bord", description: "Vue d'ensemble de l'activité de l'agence." },
   "/admin/voyages": { titre: "Gestion des voyages", description: "Créez, modifiez et suivez les départs proposés." },
@@ -17,15 +17,15 @@ const PAGES = {
 export default function AdminLayout() {
   const [menuOuvert, setMenuOuvert] = useState(false);
   const { pathname } = useLocation();
-  const page = PAGES[pathname] || { titre: "Administration" };
+  const numeroPage = PAGES[pathname] || { titre: "Administration" };
 
   return (
     <div className="admin-shell">
       <Sidebar open={menuOuvert} onClose={() => setMenuOuvert(false)} />
       <div className="admin-main">
-        <Header title={page.titre} subtitle={page.description} onMenu={() => setMenuOuvert(true)} />
+        <Header title={numeroPage.titre} subtitle={numeroPage.description} onMenu={() => setMenuOuvert(true)} />
         <main className="admin-content">
-          <Outlet />   {/* ici s'affiche la page choisie */}
+          <Outlet />   {                                   }
         </main>
       </div>
     </div>

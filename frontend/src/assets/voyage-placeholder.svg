@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title">
+  <title id="title">Illustration de voyage au bord de la mer</title>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#b9d9d2"/>
+      <stop offset="1" stop-color="#f3e7d3"/>
+    </linearGradient>
+    <linearGradient id="sea" x2="0" y2="1">
+      <stop stop-color="#5caa9a"/>
+      <stop offset="1" stop-color="#2f6b66"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#sky)"/>
+  <circle cx="900" cy="190" r="82" fill="#f2b766"/>
+  <path d="M0 365 210 205l190 154 180-210 254 218 184-142 182 153v322H0Z" fill="#729b83"/>
+  <path d="m0 426 220-135 190 134 200-151 251 176 186-113 153 102v261H0Z" fill="#3c725c"/>
+  <path d="M0 416c162-31 242 44 399 16s247-45 393-2 248 44 408 4v266H0Z" fill="url(#sea)"/>
+  <path d="M0 506c164-28 249 35 402 9s244-35 390 3 259 35 408-2" fill="none" stroke="#d8e9d6" stroke-linecap="round" stroke-width="12" opacity=".8"/>
+  <path d="M0 599c178-24 257 31 415 9s256-28 392 5 256 26 393-3" fill="none" stroke="#d8e9d6" stroke-linecap="round" stroke-width="9" opacity=".55"/>
+</svg>

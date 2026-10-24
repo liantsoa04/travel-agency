@@ -1,14 +1,14 @@
 import Modal from "./Modal";
 
-// Demande une confirmation avant une action importante (ex : suppression)
-export default function ConfirmModal({ message, confirmLabel = "Confirmer", onConfirm, onCancel, loading }) {
+
+export default function ConfirmModal({ message, confirmLabel = "Confirmer", onConfirm: confirmerAction, onCancel: annulerAction, loading: chargement }) {
   return (
-    <Modal title="Confirmation" onClose={onCancel}>
+    <Modal title="Confirmation" onClose={annulerAction}>
       <p className="confirm-text">{message}</p>
       <div className="form-actions">
-        <button className="btn btn-outline" onClick={onCancel}>Retour</button>
-        <button className="btn btn-danger" onClick={onConfirm} disabled={loading}>
-          {loading ? "Patientez..." : confirmLabel}
+        <button className="btn btn-outline" onClick={annulerAction}>Retour</button>
+        <button className="btn btn-danger" onClick={confirmerAction} disabled={chargement}>
+          {chargement ? "Patientez..." : confirmLabel}
         </button>
       </div>
     </Modal>

@@ -1,16 +1,16 @@
 import Icon from "./Icon";
 
-// Carte statistique du dashboard
-// icon = nom d'une icône de Icon.jsx ; color = "green" | "orange" | "sand"
-export default function StatCard({ label, value, variation, icon, color = "green" }) {
+
+
+export default function StatCard({ label: libelle, value: valeur, variation, icon: icone, couleur = "green" }) {
   const positif = variation >= 0;
   return (
-    <div className={`stat-card stat-${color}`}>
+    <div className={`stat-card stat-${couleur}`}>
       <div className="stat-top">
-        <p className="stat-label">{label}</p>
-        <div className="stat-icon"><Icon name={icon} size={20} /></div>
+        <p className="stat-label">{libelle}</p>
+        <div className="stat-icon"><Icon name={icone} size={20} /></div>
       </div>
-      <p className="stat-value">{value}</p>
+      <p className="stat-value">{valeur}</p>
       {variation !== undefined && (
         <p className={`stat-variation ${positif ? "up" : "down"}`}>
           <Icon name={positif ? "hausse" : "baisse"} size={14} />

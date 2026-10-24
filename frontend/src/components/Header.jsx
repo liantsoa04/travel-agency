@@ -4,22 +4,22 @@ import useFetch from "../hooks/useFetch";
 import { ROLES } from "../utils/format";
 import Icon from "./Icon";
 
-// En-tête de l'espace admin : titre, notifications, profil
-export default function Header({ title, subtitle, onMenu }) {
-  const { user } = useAuth();
+
+export default function Header({ title: titre, subtitle: sousTitre, onMenu: changerMenu }) {
+  const { user: utilisateur } = useAuth();
   const { data: alertes } = useFetch("/dashboard/alertes/");
   const [ouvert, setOuvert] = useState(false);
   const liste = alertes || [];
 
   return (
     <header className="admin-header">
-      <button className="menu-btn" onClick={onMenu} aria-label="Ouvrir le menu">
+      <button className="menu-btn" onClick={changerMenu} aria-label="Ouvrir le menu">
         <Icon name="menu" size={22} />
       </button>
 
       <div className="admin-title">
-        <h1>{title}</h1>
-        {subtitle && <p>{subtitle}</p>}
+        <h1>{titre}</h1>
+        {sousTitre && <p>{sousTitre}</p>}
       </div>
 
       <div className="admin-header-right">
@@ -32,18 +32,18 @@ export default function Header({ title, subtitle, onMenu }) {
             <div className="notif-dropdown">
               <strong>Notifications</strong>
               {liste.length === 0 && <p className="muted">Rien à signaler.</p>}
-              {liste.map((a, i) => (
-                <p key={i} className={`notif-item notif-${a.type}`}>{a.message}</p>
+              {liste.map((a, indice) => (
+                <p key={indice} className={`notif-item notif-${a.type}`}>{a.message}</p>
               ))}
             </div>
           )}
         </div>
 
         <div className="profile-chip">
-          <div className="avatar">{(user?.first_name?.[0] || user?.email?.[0] || "?").toUpperCase()}</div>
+          <div className="avatar">{(utilisateur?.first_name?.[0] || utilisateur?.email?.[0] || "?").toUpperCase()}</div>
           <div className="profile-text">
-            <strong>{user?.first_name} {user?.last_name}</strong>
-            <span>{ROLES[user?.role]?.label}</span>
+            <strong>{utilisateur?.first_name} {utilisateur?.last_name}</strong>
+            <span>{ROLES[utilisateur?.role]?.label}</span>
           </div>
         </div>
       </div>

@@ -1,39 +1,34 @@
-/* =====================================================
-   3. COMPOSANTS COMMUNS : boutons, badges, formulaires,
-      alertes, états, modales, recherche
-   ===================================================== */
 
-/* ----- Boutons ----- */
+
+
+
+
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
   border: 1.5px solid transparent; border-radius: var(--rayon-petit);
   padding: 0.5rem 0.9rem; font: 700 0.875rem var(--police-texte); cursor: pointer;
-  text-decoration: none; text-align: center; transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-decoration: none; text-align: center;
 }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
 .btn-lg { padding: 0.85rem 1.4rem; font-size: 1.02rem; }
 .btn-block { display: flex; width: 100%; }
 .btn-primary { background: var(--vert); color: #fff; }
-.btn-primary:hover:not(:disabled) { background: var(--vert-fonce); }
 .btn-accent { background: var(--orange); color: #fff; }
-.btn-accent:hover { background: var(--orange-fonce); }
 .btn-light { background: #fff; color: var(--vert-fonce); }
-.btn-light:hover { background: var(--sable); }
 .btn-outline { background: #fff; color: var(--vert-fonce); border-color: var(--bordure); }
-.btn-outline:hover { border-color: var(--vert); background: var(--vert-clair); }
 .btn-danger { background: var(--rouge); color: #fff; }
 .btn-danger-outline { background: #fff; color: var(--rouge); border-color: var(--rouge-clair); }
-.btn-danger-outline:hover { background: var(--rouge-clair); }
 
-/* ----- Badges (statuts) ----- */
+
 .badge { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.76rem; font-weight: 700; white-space: nowrap; }
 .badge-green { background: var(--vert-clair); color: var(--vert-fonce); }
 .badge-orange { background: var(--orange-clair); color: var(--orange-fonce); }
 .badge-red { background: var(--rouge-clair); color: var(--rouge); }
 .badge-grey { background: var(--beige); color: var(--texte-doux); }
 
-/* ----- Formulaires ----- */
+
 .form-group { margin-bottom: 0.9rem; }
 .form-group label { display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
 input, select, textarea {
@@ -48,18 +43,18 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .check { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
 .check input { width: auto; }
 
-/* ----- Barre de recherche ----- */
+
 .searchbar { display: flex; align-items: center; gap: 0.5rem; background: #fff; border: 1.5px solid var(--bordure); border-radius: var(--rayon-petit); padding: 0 0.75rem; flex: 1; min-width: 200px; color: var(--texte-doux); }
 .searchbar:focus-within { border-color: var(--vert); box-shadow: 0 0 0 3px var(--vert-clair); }
 .searchbar input { border: 0; box-shadow: none !important; padding: 0.6rem 0; }
 
-/* ----- Alertes (succès / erreur) ----- */
+
 .alert { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border-radius: var(--rayon-petit); margin-bottom: 1rem; font-weight: 600; font-size: 0.93rem; }
 .alert-error { background: var(--rouge-clair); color: var(--rouge); }
 .alert-success { background: var(--vert-clair); color: var(--vert-fonce); }
 .alert-close { background: none; border: 0; cursor: pointer; color: inherit; display: flex; padding: 0.2rem; }
 
-/* ----- États : chargement, liste vide, erreur ----- */
+
 .state-box { text-align: center; padding: 2.5rem 1rem; color: var(--texte-doux); }
 .state-icon { width: 52px; height: 52px; margin: 0 auto 0.8rem; border-radius: 50%; background: var(--sable); color: var(--vert); display: flex; align-items: center; justify-content: center; }
 .state-error { color: var(--rouge); }
@@ -67,17 +62,16 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .spinner { width: 36px; height: 36px; margin: 0 auto 0.7rem; border: 4px solid var(--beige); border-top-color: var(--vert); border-radius: 50%; animation: tourne 0.8s linear infinite; }
 @keyframes tourne { to { transform: rotate(360deg); } }
 
-/* ----- Image de remplacement (quand une photo est absente) ----- */
+
 .img-fallback { display: flex; align-items: center; justify-content: center; color: var(--vert); background: linear-gradient(135deg, var(--beige), var(--vert-clair)); }
 
-/* ----- Fenêtres modales ----- */
+
 .modal-overlay { position: fixed; inset: 0; background: rgba(27, 36, 30, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; }
 .modal { background: #fff; border-radius: var(--rayon); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: var(--ombre-forte); }
 .modal-wide { max-width: 780px; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--bordure); }
 .modal-header h3 { margin: 0; }
 .modal-close { background: none; border: 0; cursor: pointer; color: var(--texte-doux); display: flex; padding: 0.3rem; border-radius: 8px; }
-.modal-close:hover { background: var(--sable); }
 .modal-body { padding: 1.25rem; }
 .confirm-text { font-size: 1.02rem; }
 
@@ -87,11 +81,11 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .pagination-size { display: inline-flex; align-items: center; gap: 0.4rem; margin-right: 0.3rem; color: var(--texte-doux); font-size: 0.8rem; }
 .pagination-size select { width: auto; min-width: 4rem; padding: 0.35rem 1.5rem 0.35rem 0.5rem; font-size: 0.8rem; }
 .pagination-button { min-width: 2rem; min-height: 2rem; padding: 0.3rem 0.55rem; border: 1px solid var(--bordure); border-radius: 6px; background: #fff; color: var(--vert-fonce); font: 600 0.8rem var(--police-texte); cursor: pointer; }
-.pagination-button:hover:not(:disabled), .pagination-button.active { border-color: var(--vert); background: var(--vert-clair); color: var(--vert-fonce); }
+.pagination-button.active { border-color: var(--vert); background: var(--vert-clair); color: var(--vert-fonce); }
 .pagination-button:disabled { opacity: 0.5; cursor: not-allowed; }
 .pagination-ellipsis { padding: 0 0.2rem; color: var(--texte-doux); }
 
-/* ----- Formulaire : adaptation mobile ----- */
+
 @media (max-width: 800px) {
   .form-grid { grid-template-columns: 1fr; }
 }

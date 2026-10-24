@@ -15,7 +15,7 @@ MOIS = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct
 
 
 def debut_du_mois(aujourdhui, retour):
-    """Premier jour du mois, 'retour' mois en arrière (0 = ce mois-ci)."""
+                                                                          
     annee, mois = aujourdhui.year, aujourdhui.month - retour
     while mois <= 0:
         mois += 12
@@ -24,14 +24,14 @@ def debut_du_mois(aujourdhui, retour):
 
 
 def variation(actuel, precedent):
-    """Évolution en % entre le mois précédent et ce mois-ci."""
+                                                               
     if precedent == 0:
         return 100 if actuel > 0 else 0
     return round((actuel - precedent) / precedent * 100)
 
 
 def construire_alertes():
-    """Messages importants affichés dans le dashboard et dans la cloche."""
+                                                                           
     alertes = []
     en_attente = Reservation.objects.filter(statut="en_attente").count()
     if en_attente:
@@ -51,13 +51,13 @@ class AlertesView(APIView):
 
 
 class StatsView(APIView):
-    """GET /api/dashboard/stats/ : toutes les statistiques du dashboard."""
+                                                                           
     permission_classes = [IsAdminOrEmployee]
 
     def get(self, request):
         aujourdhui = date.today()
 
-        # --- 6 derniers mois : on regroupe en Python (simple à comprendre) ---
+
         mois_liste = [debut_du_mois(aujourdhui, i) for i in range(5, -1, -1)]
         par_mois = {(m.year, m.month): {"mois": MOIS[m.month - 1], "reservations": 0, "revenus": 0.0} for m in mois_liste}
 
@@ -74,7 +74,7 @@ class StatsView(APIView):
 
         ce_mois, mois_prec = mensuel[-1], mensuel[-2]
 
-        # --- Cartes ---
+
         debut_mois = timezone.make_aware(datetime(aujourdhui.year, aujourdhui.month, 1))
         debut_prec_date = debut_du_mois(aujourdhui, 1)
         debut_prec = timezone.make_aware(datetime(debut_prec_date.year, debut_prec_date.month, 1))
@@ -93,7 +93,7 @@ class StatsView(APIView):
             "revenus": {"total": float(total_revenus), "variation": variation(ce_mois["revenus"], mois_prec["revenus"])},
         }
 
-        # --- Voyages populaires ---
+
         populaires = (
             Voyage.objects
             .annotate(nb_reservations=Count("reservations", filter=~Q(reservations__statut="annulee")))
@@ -104,7 +104,7 @@ class StatsView(APIView):
             for v in populaires
         ]
 
-        # --- Occupation : voyages à venir presque complets ou complets ---
+
         occupation = []
         for v in Voyage.objects.filter(date_retour__gte=aujourdhui).order_by("places_disponibles"):
             taux = round((v.nombre_places - v.places_disponibles) / v.nombre_places * 100)

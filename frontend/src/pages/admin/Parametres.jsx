@@ -4,16 +4,16 @@ import Icon from "../../components/Icon";
 import { ROLES } from "../../utils/format";
 
 export default function Parametres() {
-  const { user } = useAuth();
+  const { user: utilisateur } = useAuth();
 
   return (
     <div className="grid-2">
       <section className="panel">
         <h2>Mon compte</h2>
         <dl className="detail-list">
-          <div><dt>Nom</dt><dd>{user.first_name} {user.last_name}</dd></div>
-          <div><dt>E-mail</dt><dd>{user.email}</dd></div>
-          <div><dt>Rôle</dt><dd><Badge info={ROLES[user.role]} /></dd></div>
+          <div><dt>Nom</dt><dd>{utilisateur.first_name} {utilisateur.last_name}</dd></div>
+          <div><dt>E-mail</dt><dd>{utilisateur.email}</dd></div>
+          <div><dt>Rôle</dt><dd><Badge info={ROLES[utilisateur.role]} /></dd></div>
         </dl>
         <p className="muted small">
           Pour changer un mot de passe, l'administrateur peut modifier l'utilisateur dans la page « Utilisateurs ».

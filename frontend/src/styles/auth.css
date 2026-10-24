@@ -1,12 +1,12 @@
-/* =====================================================
-   4. CONNEXION / INSCRIPTION
-   ===================================================== */
+
+
+
 .auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
 
-/* Panneau gauche : photo + message */
+
 .auth-visual {
   background: linear-gradient(160deg, rgba(27, 67, 50, 0.93), rgba(27, 67, 50, 0.7)),
-    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=70") center/cover, var(--vert-fonce);
+    url("/images/voyages/1507525428034-b723cf961d3e.jpg") center/cover, var(--vert-fonce);
   color: #fff; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center;
 }
 .auth-visual .logo { color: #fff; margin-bottom: auto; }
@@ -14,7 +14,7 @@
 .auth-visual h2 { font-size: 1.8rem; max-width: 460px; }
 .auth-visual p { max-width: 420px; opacity: 0.9; margin-bottom: auto; }
 
-/* Panneau droit : formulaire */
+
 .auth-form-wrap { display: flex; align-items: center; justify-content: center; padding: 2rem 1.25rem; background: var(--blanc-casse); }
 .auth-form { width: 100%; max-width: 420px; background: #fff; border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 2rem; box-shadow: var(--ombre); }
 .auth-form h1 { font-size: 1.55rem; color: var(--vert-fonce); margin-bottom: 1rem; }

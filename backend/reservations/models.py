@@ -5,7 +5,7 @@ from voyages.models import Voyage
 
 
 class ReservationError(Exception):
-    """Erreur métier (ex : plus assez de places)."""
+    pass                                            
 
 
 class Reservation(models.Model):
@@ -26,29 +26,29 @@ class Reservation(models.Model):
         ordering = ["-date_reservation"]
 
     def save(self, *args, **kwargs):
-        # Calcul automatique : prix total = prix du voyage × nombre de personnes
+
         self.prix_total = self.voyage.prix * self.nombre_personnes
         super().save(*args, **kwargs)
 
     def confirmer(self):
-        """Confirme la réservation et retire les places du voyage."""
+                                                                     
         if self.statut == "confirmee":
             raise ReservationError("Cette réservation est déjà confirmée.")
         if self.statut == "annulee":
             raise ReservationError("Une réservation annulée ne peut pas être confirmée.")
 
         with transaction.atomic():
-            # select_for_update : évite que deux confirmations prennent les mêmes places
+
             voyage = Voyage.objects.select_for_update().get(pk=self.voyage_id)
             if voyage.places_disponibles < self.nombre_personnes:
                 raise ReservationError("Nombre de places disponibles insuffisant.")
             voyage.places_disponibles -= self.nombre_personnes
-            voyage.save()                      # le statut du voyage est recalculé
+            voyage.save()
             self.statut = "confirmee"
             self.save()
 
     def annuler(self):
-        """Annule la réservation. Si elle était confirmée, les places sont rendues."""
+                                                                                      
         if self.statut == "annulee":
             raise ReservationError("Cette réservation est déjà annulée.")
 

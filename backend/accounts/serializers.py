@@ -6,7 +6,7 @@ from clients.models import Client
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Utilisé pour afficher et gérer les utilisateurs (page Utilisateurs de l'admin)."""
+                                                                                         
     password = serializers.CharField(write_only=True, required=False, min_length=6)
 
     class Meta:
@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password", None)
         if not password:
             raise serializers.ValidationError({"password": "Le mot de passe est obligatoire."})
-        # On utilise l'e-mail comme username
+
         user = User.objects.create_user(
             username=validated_data["email"], password=password, **validated_data
         )
@@ -29,13 +29,13 @@ class UserSerializer(serializers.ModelSerializer):
         for champ, valeur in validated_data.items():
             setattr(instance, champ, valeur)
         if password:
-            instance.set_password(password)   # le mot de passe est toujours chiffré
+            instance.set_password(password)
         instance.save()
         return instance
 
 
 class RegisterSerializer(serializers.Serializer):
-    """Inscription d'un nouveau client : crée un User (role=client) et sa fiche Client."""
+                                                                                          
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
     email = serializers.EmailField()
@@ -69,9 +69,9 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class LoginSerializer(TokenObtainPairSerializer):
-    """Login JWT : on ajoute les infos de l'utilisateur (dont le rôle) à la réponse."""
+                                                                                       
     def validate(self, attrs):
-        data = super().validate(attrs)   # contient "access" et "refresh"
+        data = super().validate(attrs)
         data["user"] = {
             "id": self.user.id,
             "email": self.user.email,

@@ -9,7 +9,7 @@ class ReservationSerializer(serializers.ModelSerializer):
     client = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), required=False)
     voyage = serializers.PrimaryKeyRelatedField(queryset=Voyage.objects.all())
 
-    # Champs en lecture seule pour afficher facilement les informations dans React
+
     client_nom = serializers.SerializerMethodField()
     client_email = serializers.CharField(source="client.email", read_only=True)
     voyage_titre = serializers.CharField(source="voyage.titre", read_only=True)

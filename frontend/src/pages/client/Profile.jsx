@@ -7,51 +7,51 @@ import { Loader, ErrorState } from "../../components/States";
 
 export default function Profile() {
   const { updateUser } = useAuth();
-  const { data, loading, error, reload } = useFetch("/clients/me/");
-  const [form, setForm] = useState({ prenom: "", nom: "", telephone: "", adresse: "" });
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/clients/me/");
+  const [formulaire, setForm] = useState({ prenom: "", nom: "", telephone: "", adresse: "" });
   const [erreurs, setErreurs] = useState({});
   const [erreurGlobale, setErreurGlobale] = useState("");
   const [succes, setSucces] = useState("");
   const [envoi, setEnvoi] = useState(false);
 
-  // Quand les données arrivent, on remplit le formulaire
+
   useEffect(() => {
-    if (data) setForm({ prenom: data.prenom, nom: data.nom, telephone: data.telephone, adresse: data.adresse });
-  }, [data]);
+    if (donnees) setForm({ prenom: donnees.prenom, nom: donnees.nom, telephone: donnees.telephone, adresse: donnees.adresse });
+  }, [donnees]);
 
-  if (loading) return <Loader />;
-  if (error) return <ErrorState message={error} onRetry={reload} />;
+  if (chargement) return <Loader />;
+  if (erreurApi) return <ErrorState message={erreurApi} onRetry={recharger} />;
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (evenement) => setForm({ ...formulaire, [evenement.target.name]: evenement.target.value });
 
-  async function submit(e) {
-    e.preventDefault();
+  async function submit(evenement) {
+    evenement.preventDefault();
     setSucces("");
     setErreurGlobale("");
-    const e1 = {};
-    if (!form.prenom.trim()) e1.prenom = "Le prénom est obligatoire.";
-    if (!form.nom.trim()) e1.nom = "Le nom est obligatoire.";
-    setErreurs(e1);
-    if (Object.keys(e1).length) return;
+    const erreursValidees = {};
+    if (!formulaire.prenom.trim()) erreursValidees.prenom = "Le prénom est obligatoire.";
+    if (!formulaire.nom.trim()) erreursValidees.nom = "Le nom est obligatoire.";
+    setErreurs(erreursValidees);
+    if (Object.keys(erreursValidees).length) return;
 
     setEnvoi(true);
     try {
-      await api.patch("/clients/me/", form);
-      updateUser({ first_name: form.prenom, last_name: form.nom });
+      await api.patch("/clients/me/", formulaire);
+      updateUser({ first_name: formulaire.prenom, last_name: formulaire.nom });
       setSucces("Profil mis à jour avec succès.");
-    } catch (err) {
-      setErreurs(getFieldErrors(err));
-      setErreurGlobale(getErrorMessage(err));
+    } catch (erreurCapture) {
+      setErreurs(getFieldErrors(erreurCapture));
+      setErreurGlobale(getErrorMessage(erreurCapture));
     } finally {
       setEnvoi(false);
     }
   }
 
-  const champ = (name, label) => (
+  const champ = (nomChamp, libelle) => (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} value={form[name]} onChange={change} />
-      {erreurs[name] && <p className="field-error">{erreurs[name]}</p>}
+      <label htmlFor={nomChamp}>{libelle}</label>
+      <input id={nomChamp} name={nomChamp} value={formulaire[nomChamp]} onChange={change} />
+      {erreurs[nomChamp] && <p className="field-error">{erreurs[nomChamp]}</p>}
     </div>
   );
 
@@ -60,10 +60,10 @@ export default function Profile() {
       <h1 className="page-title">Mon profil</h1>
       <form className="card-form" onSubmit={submit} noValidate>
         <div className="profile-head">
-          <div className="avatar avatar-lg">{(form.prenom[0] || "?").toUpperCase()}</div>
+          <div className="avatar avatar-lg">{(formulaire.prenom[0] || "?").toUpperCase()}</div>
           <div>
-            <strong>{form.prenom} {form.nom}</strong>
-            <p className="muted">{data.email}</p>
+            <strong>{formulaire.prenom} {formulaire.nom}</strong>
+            <p className="muted">{donnees.email}</p>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export default function Profile() {
           {champ("nom", "Nom")}
           <div className="form-group">
             <label htmlFor="email">Adresse e-mail</label>
-            <input id="email" value={data.email} disabled />
+            <input id="email" value={donnees.email} disabled />
             <p className="muted small">L'e-mail ne peut pas être modifié.</p>
           </div>
           {champ("telephone", "Téléphone")}

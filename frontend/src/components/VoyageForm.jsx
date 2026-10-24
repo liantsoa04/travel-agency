@@ -9,60 +9,60 @@ const VIDE = {
   categorie: "plage", image: "",
 };
 
-// Formulaire d'ajout / modification d'un voyage (voyage = null -> ajout)
-export default function VoyageForm({ voyage, onSaved, onCancel }) {
-  const [form, setForm] = useState(voyage ? { ...VIDE, ...voyage } : VIDE);
+
+export default function VoyageForm({ voyage, onSaved: apresEnregistrement, onCancel: annulerAction }) {
+  const [formulaire, setForm] = useState(voyage ? { ...VIDE, ...voyage } : VIDE);
   const [erreurs, setErreurs] = useState({});
   const [erreurGlobale, setErreurGlobale] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [chargement, definirChargement] = useState(false);
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (evenement) => setForm({ ...formulaire, [evenement.target.name]: evenement.target.value });
 
-  // Validations simples côté React (Django revérifie aussi)
+
   function valider() {
-    const e = {};
-    ["titre", "destination", "pays", "ville", "description"].forEach((c) => {
-      if (!String(form[c]).trim()) e[c] = "Ce champ est obligatoire.";
+    const evenement = {};
+    ["titre", "destination", "pays", "ville", "description"].forEach((categorie) => {
+      if (!String(formulaire[categorie]).trim()) evenement[categorie] = "Ce champ est obligatoire.";
     });
-    if (!form.date_depart) e.date_depart = "Date de départ obligatoire.";
-    if (!form.date_retour) e.date_retour = "Date de retour obligatoire.";
-    if (form.date_depart && form.date_retour && form.date_retour <= form.date_depart)
-      e.date_retour = "La date de retour doit être après la date de départ.";
-    if (!(Number(form.prix) > 0)) e.prix = "Le prix doit être positif.";
-    if (!(Number(form.nombre_places) > 0)) e.nombre_places = "Le nombre de places doit être positif.";
-    return e;
+    if (!formulaire.date_depart) evenement.date_depart = "Date de départ obligatoire.";
+    if (!formulaire.date_retour) evenement.date_retour = "Date de retour obligatoire.";
+    if (formulaire.date_depart && formulaire.date_retour && formulaire.date_retour <= formulaire.date_depart)
+      evenement.date_retour = "La date de retour doit être après la date de départ.";
+    if (!(Number(formulaire.prix) > 0)) evenement.prix = "Le prix doit être positif.";
+    if (!(Number(formulaire.nombre_places) > 0)) evenement.nombre_places = "Le nombre de places doit être positif.";
+    return evenement;
   }
 
-  async function submit(e) {
-    e.preventDefault();
-    const e1 = valider();
-    setErreurs(e1);
-    if (Object.keys(e1).length) return;
+  async function submit(evenement) {
+    evenement.preventDefault();
+    const erreursValidees = valider();
+    setErreurs(erreursValidees);
+    if (Object.keys(erreursValidees).length) return;
 
-    setLoading(true);
+    definirChargement(true);
     setErreurGlobale("");
     const donnees = {
-      titre: form.titre, destination: form.destination, pays: form.pays, ville: form.ville,
-      description: form.description, date_depart: form.date_depart, date_retour: form.date_retour,
-      prix: form.prix, nombre_places: form.nombre_places, categorie: form.categorie, image: form.image,
+      titre: formulaire.titre, destination: formulaire.destination, pays: formulaire.pays, ville: formulaire.ville,
+      description: formulaire.description, date_depart: formulaire.date_depart, date_retour: formulaire.date_retour,
+      prix: formulaire.prix, nombre_places: formulaire.nombre_places, categorie: formulaire.categorie, image: formulaire.image,
     };
     try {
       if (voyage) await api.put(`/voyages/${voyage.id}/`, donnees);
       else await api.post("/voyages/", donnees);
-      onSaved();
-    } catch (err) {
-      setErreurs(getFieldErrors(err));
-      setErreurGlobale(getErrorMessage(err));
+      apresEnregistrement();
+    } catch (erreurCapture) {
+      setErreurs(getFieldErrors(erreurCapture));
+      setErreurGlobale(getErrorMessage(erreurCapture));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
   }
 
-  const champ = (name, label, type = "text", extra = {}) => (
+  const champ = (nomChamp, libelle, type = "text", optionsSupplementaires = {}) => (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} value={form[name]} onChange={change} {...extra} />
-      {erreurs[name] && <p className="field-error">{erreurs[name]}</p>}
+      <label htmlFor={nomChamp}>{libelle}</label>
+      <input id={nomChamp} name={nomChamp} type={type} value={formulaire[nomChamp]} onChange={change} {...optionsSupplementaires} />
+      {erreurs[nomChamp] && <p className="field-error">{erreurs[nomChamp]}</p>}
     </div>
   );
 
@@ -76,25 +76,25 @@ export default function VoyageForm({ voyage, onSaved, onCancel }) {
         {champ("ville", "Ville")}
         {champ("date_depart", "Date de départ", "date")}
         {champ("date_retour", "Date de retour", "date")}
-        {champ("prix", "Prix par personne (€)", "number", { min: 1, step: "0.01" })}
+        {champ("prix", "Prix par personne (Ar)", "number", { min: 1, step: "0.01" })}
         {champ("nombre_places", "Nombre de places", "number", { min: 1 })}
         <div className="form-group">
           <label htmlFor="categorie">Catégorie</label>
-          <select id="categorie" name="categorie" value={form.categorie} onChange={change}>
-            {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          <select id="categorie" name="categorie" value={formulaire.categorie} onChange={change}>
+            {CATEGORIES.map((categorie) => <option key={categorie.value} value={categorie.value}>{categorie.label}</option>)}
           </select>
         </div>
         {champ("image", "Lien de l'image (URL)", "url", { placeholder: "https://..." })}
       </div>
       <div className="form-group">
         <label htmlFor="description">Description</label>
-        <textarea id="description" name="description" rows="4" value={form.description} onChange={change} />
+        <textarea id="description" name="description" rows="4" value={formulaire.description} onChange={change} />
         {erreurs.description && <p className="field-error">{erreurs.description}</p>}
       </div>
       <div className="form-actions">
-        <button type="button" className="btn btn-outline" onClick={onCancel}>Annuler</button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "Enregistrement..." : voyage ? "Enregistrer les modifications" : "Ajouter le voyage"}
+        <button type="button" className="btn btn-outline" onClick={annulerAction}>Annuler</button>
+        <button type="submit" className="btn btn-primary" disabled={chargement}>
+          {chargement ? "Enregistrement..." : voyage ? "Enregistrer les modifications" : "Ajouter le voyage"}
         </button>
       </div>
     </form>

@@ -4,7 +4,7 @@ import Badge from "./Badge";
 import Icon from "./Icon";
 import { STATUTS_VOYAGE, categorieLabel, formatDateCourte, formatPrix } from "../utils/format";
 
-// Carte d'un voyage (côté client)
+
 export default function VoyageCard({ voyage }) {
   return (
     <article className="voyage-card">

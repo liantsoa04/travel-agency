@@ -1,35 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
 import api, { getErrorMessage } from "../services/api";
 
-// Charge des données depuis l'API et gère loading + erreur.
-// Utilisation : const { data, loading, error, reload } = useFetch("/voyages/", { search: "paris" })
-export default function useFetch(url, params = {}) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export default function useFetch(url, parametres = {}) {
+  const [donnees, definirDonnees] = useState(null);
+  const [chargement, definirChargement] = useState(true);
+  const [erreurApi, definirErreur] = useState("");
 
-  // On retire les filtres vides pour ne pas les envoyer à l'API
-  const propres = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== "" && v !== null && v !== undefined && v !== false)
+  const filtresActifs = Object.fromEntries(
+    Object.entries(parametres).filter(([, voyage]) => voyage !== "" && voyage !== null && voyage !== undefined && voyage !== false)
   );
-  const cle = JSON.stringify(propres);
+  const filtresEnTexte = JSON.stringify(filtresActifs);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
+  const chargerDonnees = useCallback(async () => {
+    definirChargement(true);
+    definirErreur("");
+
     try {
-      const res = await api.get(url, { params: JSON.parse(cle) });
-      setData(res.data);
-    } catch (e) {
-      setError(getErrorMessage(e));
+      const reponse = await api.get(url, {
+        params: JSON.parse(filtresEnTexte),
+      });
+      definirDonnees(reponse.data);
+    } catch (erreurApi) {
+      definirErreur(getErrorMessage(erreurApi));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
-  }, [url, cle]);
+  }, [url, filtresEnTexte]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    chargerDonnees();
+  }, [chargerDonnees]);
 
-  return { data, loading, error, reload: load };
+  return { data: donnees, loading: chargement, error: erreurApi, reload: chargerDonnees };
 }

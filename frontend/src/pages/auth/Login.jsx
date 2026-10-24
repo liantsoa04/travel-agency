@@ -6,33 +6,33 @@ import Alert from "../../components/Alert";
 import Logo from "../../components/Logo";
 
 export default function Login() {
-  const { user, login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { user: utilisateur, login } = useAuth();
+  const naviguer = useNavigate();
+  const emplacement = useLocation();
+  const [adresseCourriel, definirAdresseCourriel] = useState("");
+  const [motDePasse, definirMotDePasse] = useState("");
   const [erreur, setErreur] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [chargement, definirChargement] = useState(false);
 
-  // Déjà connecté : on renvoie vers le bon espace
-  if (user) return <Navigate to={homePathFor(user)} replace />;
 
-  async function submit(e) {
-    e.preventDefault();
+  if (utilisateur) return <Navigate to={homePathFor(utilisateur)} replace />;
+
+  async function submit(evenement) {
+    evenement.preventDefault();
     setErreur("");
-    if (!email || !password) return setErreur("Veuillez saisir votre e-mail et votre mot de passe.");
-    setLoading(true);
+    if (!adresseCourriel || !motDePasse) return setErreur("Veuillez saisir votre e-mail et votre mot de passe.");
+    definirChargement(true);
     try {
-      const connecte = await login(email, password);
-      // Client -> espace client / Admin et employé -> dashboard admin
-      const retour = location.state?.from;
-      if (connecte.role === "client") navigate(retour || "/", { replace: true });
-      else navigate("/admin", { replace: true });
-    } catch (err) {
-      if (err.response?.status === 401) setErreur("E-mail ou mot de passe incorrect.");
-      else setErreur(getErrorMessage(err));
+      const connecte = await login(adresseCourriel, motDePasse);
+
+      const retour = emplacement.state?.from;
+      if (connecte.role === "client") naviguer(retour || "/", { replace: true });
+      else naviguer("/admin", { replace: true });
+    } catch (erreurCapture) {
+      if (erreurCapture.response?.status === 401) setErreur("E-mail ou mot de passe incorrect.");
+      else setErreur(getErrorMessage(erreurCapture));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
   }
 
@@ -49,14 +49,14 @@ export default function Login() {
           <Alert type="error">{erreur}</Alert>
           <div className="form-group">
             <label htmlFor="email">Adresse e-mail</label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <input id="email" type="email" value={adresseCourriel} onChange={(evenement) => definirAdresseCourriel(evenement.target.value)} autoComplete="email" />
           </div>
           <div className="form-group">
             <label htmlFor="password">Mot de passe</label>
-            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
+            <input id="password" type="password" value={motDePasse} onChange={(evenement) => definirMotDePasse(evenement.target.value)} autoComplete="current-password" />
           </div>
-          <button className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? "Connexion..." : "Se connecter"}
+          <button className="btn btn-primary btn-block" disabled={chargement}>
+            {chargement ? "Connexion..." : "Se connecter"}
           </button>
           <p className="auth-switch">Pas encore de compte ? <Link to="/register">Créer un compte</Link></p>
         </form>

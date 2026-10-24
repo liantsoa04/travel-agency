@@ -1,7 +1,7 @@
-"""
-Configuration de Django.
-Les valeurs secrètes (mot de passe MySQL...) sont lues dans le fichier .env
-"""
+   
+                        
+                                                                           
+   
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
@@ -29,10 +29,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Librairies
+
     "rest_framework",
     "corsheaders",
-    # Nos applications
+
     "accounts",
     "voyages",
     "clients",
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # doit rester en premier
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -72,8 +72,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# --- Base de données MySQL ---
-# --- Base de données MySQL ---
+
+
 DB_OPTIONS = {"charset": "utf8mb4"}
 if config("DB_SSL", default=False, cast=bool):
     DB_OPTIONS["ssl"] = {"ssl_mode": "REQUIRED"}
@@ -89,7 +89,7 @@ DATABASES = {
         "OPTIONS": DB_OPTIONS,
     }
 }
-# --- Utilisateur personnalisé (avec rôles) ---
+
 AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -112,7 +112,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# --- Django REST Framework + JWT ---
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -127,8 +127,8 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
-# --- CORS : autorise React (Vite) à appeler Django ---
-# --- CORS : autorise React (Vite) à appeler Django ---
+
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",

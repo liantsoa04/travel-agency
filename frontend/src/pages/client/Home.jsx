@@ -14,18 +14,18 @@ const AVANTAGES = [
 ];
 
 export default function Home() {
-  const navigate = useNavigate();
+  const naviguer = useNavigate();
   const [recherche, setRecherche] = useState("");
-  const { data, loading, error, reload } = useFetch("/voyages/populaires/");
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/voyages/populaires/");
 
-  const rechercher = (e) => {
-    e.preventDefault();
-    navigate(`/voyages?search=${encodeURIComponent(recherche)}`);
+  const rechercher = (evenement) => {
+    evenement.preventDefault();
+    naviguer(`/voyages?search=${encodeURIComponent(recherche)}`);
   };
 
   return (
     <div>
-      {/* HERO */}
+      {          }
       <section className="hero">
         <div className="container hero-content">
           <h1>Partez là où le sable est chaud et la route longue.</h1>
@@ -33,7 +33,7 @@ export default function Home() {
           <form className="hero-search" onSubmit={rechercher}>
             <input
               value={recherche}
-              onChange={(e) => setRecherche(e.target.value)}
+              onChange={(evenement) => setRecherche(evenement.target.value)}
               placeholder="Destination, pays ou ville..."
               aria-label="Rechercher une destination"
             />
@@ -43,37 +43,37 @@ export default function Home() {
         </div>
       </section>
 
-      {loading ? <Loader /> : error ? <ErrorState message={error} onRetry={reload} /> : (
+      {chargement ? <Loader /> : erreurApi ? <ErrorState message={erreurApi} onRetry={recharger} /> : (
         <>
-          {/* DESTINATIONS POPULAIRES */}
+          {                             }
           <section className="section container">
             <h2 className="section-title">Destinations populaires</h2>
             <div className="dest-grid">
-              {data.slice(0, 4).map((v) => (
-                <Link key={v.id} to={`/voyages/${v.id}`} className="dest-card">
-                  <SmartImage src={v.image} alt={v.destination} />
+              {donnees.slice(0, 4).map((voyage) => (
+                <Link key={voyage.id} to={`/voyages/${voyage.id}`} className="dest-card">
+                  <SmartImage src={voyage.image} alt={voyage.destination} />
                   <div className="dest-overlay">
-                    <strong>{v.destination}</strong>
-                    <span>{v.pays}</span>
+                    <strong>{voyage.destination}</strong>
+                    <span>{voyage.pays}</span>
                   </div>
                 </Link>
               ))}
             </div>
           </section>
 
-          {/* VOYAGES POPULAIRES */}
+          {                        }
           <section className="section section-sand">
             <div className="container">
               <h2 className="section-title">Voyages populaires</h2>
               <div className="voyage-grid">
-                {data.slice(0, 6).map((v) => <VoyageCard key={v.id} voyage={v} />)}
+                {donnees.slice(0, 6).map((voyage) => <VoyageCard key={voyage.id} voyage={voyage} />)}
               </div>
             </div>
           </section>
         </>
       )}
 
-      {/* POURQUOI NOUS CHOISIR */}
+      {                           }
       <section className="section container">
         <h2 className="section-title">Pourquoi nous choisir ?</h2>
         <div className="why-grid">
@@ -87,7 +87,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      {         }
       <section className="cta">
         <div className="container">
           <h2>Votre prochain voyage est à quelques clics.</h2>

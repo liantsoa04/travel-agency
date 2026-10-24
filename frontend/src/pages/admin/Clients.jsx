@@ -13,44 +13,44 @@ import { STATUTS_RESERVATION, formatDate, formatPrix } from "../../utils/format"
 
 const VIDE = { nom: "", prenom: "", email: "", telephone: "", adresse: "" };
 
-// Formulaire client (ajout / modification)
-function ClientForm({ client, onSaved, onCancel }) {
-  const [form, setForm] = useState(client ? { ...VIDE, ...client } : VIDE);
+
+function ClientForm({ client, onSaved: apresEnregistrement, onCancel: annulerAction }) {
+  const [formulaire, setForm] = useState(client ? { ...VIDE, ...client } : VIDE);
   const [erreurs, setErreurs] = useState({});
   const [erreurGlobale, setErreurGlobale] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [chargement, definirChargement] = useState(false);
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (evenement) => setForm({ ...formulaire, [evenement.target.name]: evenement.target.value });
 
-  async function submit(e) {
-    e.preventDefault();
-    const e1 = {};
-    if (!form.nom.trim()) e1.nom = "Le nom est obligatoire.";
-    if (!form.prenom.trim()) e1.prenom = "Le prénom est obligatoire.";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) e1.email = "Adresse e-mail invalide.";
-    setErreurs(e1);
-    if (Object.keys(e1).length) return;
+  async function submit(evenement) {
+    evenement.preventDefault();
+    const erreursValidees = {};
+    if (!formulaire.nom.trim()) erreursValidees.nom = "Le nom est obligatoire.";
+    if (!formulaire.prenom.trim()) erreursValidees.prenom = "Le prénom est obligatoire.";
+    if (!/^\S+@\S+\.\S+$/.test(formulaire.email)) erreursValidees.email = "Adresse e-mail invalide.";
+    setErreurs(erreursValidees);
+    if (Object.keys(erreursValidees).length) return;
 
-    setLoading(true);
+    definirChargement(true);
     setErreurGlobale("");
-    const donnees = { nom: form.nom, prenom: form.prenom, email: form.email, telephone: form.telephone, adresse: form.adresse };
+    const donnees = { nom: formulaire.nom, prenom: formulaire.prenom, email: formulaire.email, telephone: formulaire.telephone, adresse: formulaire.adresse };
     try {
       if (client) await api.put(`/clients/${client.id}/`, donnees);
       else await api.post("/clients/", donnees);
-      onSaved();
-    } catch (err) {
-      setErreurs(getFieldErrors(err));
-      setErreurGlobale(getErrorMessage(err));
+      apresEnregistrement();
+    } catch (erreurCapture) {
+      setErreurs(getFieldErrors(erreurCapture));
+      setErreurGlobale(getErrorMessage(erreurCapture));
     } finally {
-      setLoading(false);
+      definirChargement(false);
     }
   }
 
-  const champ = (name, label, type = "text") => (
+  const champ = (nomChamp, libelle, type = "text") => (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} value={form[name]} onChange={change} />
-      {erreurs[name] && <p className="field-error">{erreurs[name]}</p>}
+      <label htmlFor={nomChamp}>{libelle}</label>
+      <input id={nomChamp} name={nomChamp} type={type} value={formulaire[nomChamp]} onChange={change} />
+      {erreurs[nomChamp] && <p className="field-error">{erreurs[nomChamp]}</p>}
     </div>
   );
 
@@ -65,46 +65,46 @@ function ClientForm({ client, onSaved, onCancel }) {
       </div>
       {champ("adresse", "Adresse")}
       <div className="form-actions">
-        <button type="button" className="btn btn-outline" onClick={onCancel}>Annuler</button>
-        <button className="btn btn-primary" disabled={loading}>{loading ? "Enregistrement..." : "Enregistrer"}</button>
+        <button type="button" className="btn btn-outline" onClick={annulerAction}>Annuler</button>
+        <button className="btn btn-primary" disabled={chargement}>{chargement ? "Enregistrement..." : "Enregistrer"}</button>
       </div>
     </form>
   );
 }
 
-// Liste des réservations d'un client
+
 function ClientReservations({ client }) {
-  const { data, loading, error, reload } = useFetch(`/clients/${client.id}/reservations/`);
-  const pagination = usePagination(data ?? []);
-  if (loading) return <Loader />;
-  if (error) return <ErrorState message={error} onRetry={reload} />;
-  if (data.length === 0) return <EmptyState text="Ce client n'a pas encore de réservation." />;
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch(`/clients/${client.id}/reservations/`);
+  const pagination = usePagination(donnees ?? []);
+  if (chargement) return <Loader />;
+  if (erreurApi) return <ErrorState message={erreurApi} onRetry={recharger} />;
+  if (donnees.length === 0) return <EmptyState text="Ce client n'a pas encore de réservation." />;
   return (
     <div className="table-wrap">
       <table className="table">
         <thead><tr><th>Voyage</th><th>Date</th><th>Pers.</th><th>Total</th><th>Statut</th></tr></thead>
         <tbody>
-          {pagination.items.map((r) => (
-            <tr key={r.id}>
-              <td>{r.voyage_titre}</td>
-              <td>{formatDate(r.date_reservation)}</td>
-              <td>{r.nombre_personnes}</td>
-              <td>{formatPrix(r.prix_total)}</td>
-              <td><Badge info={STATUTS_RESERVATION[r.statut]} /></td>
+          {pagination.items.map((reservation) => (
+            <tr key={reservation.id}>
+              <td>{reservation.voyage_titre}</td>
+              <td>{formatDate(reservation.date_reservation)}</td>
+              <td>{reservation.nombre_personnes}</td>
+              <td>{formatPrix(reservation.prix_total)}</td>
+              <td><Badge info={STATUTS_RESERVATION[reservation.statut]} /></td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination {...pagination} count={data.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
+      <Pagination {...pagination} count={donnees.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
     </div>
   );
 }
 
 export default function AdminClients() {
-  const [search, setSearch] = useState("");
+  const [search, definirRecherche] = useState("");
   const recherche = useDebounce(search);
-  const { data, loading, error, reload } = useFetch("/clients/", { search: recherche });
-  const pagination = usePagination(data ?? [], recherche);
+  const { data: donnees, loading: chargement, error: erreurApi, reload: recharger } = useFetch("/clients/", { search: recherche });
+  const pagination = usePagination(donnees ?? [], recherche);
 
   const [formClient, setFormClient] = useState(undefined);
   const [voirReservations, setVoirReservations] = useState(null);
@@ -116,7 +116,7 @@ export default function AdminClients() {
   function apresEnregistrement() {
     setMessage(formClient ? "Client modifié avec succès." : "Client ajouté avec succès.");
     setFormClient(undefined);
-    reload();
+    recharger();
   }
 
   async function supprimer() {
@@ -125,9 +125,9 @@ export default function AdminClients() {
       await api.delete(`/clients/${aSupprimer.id}/`);
       setMessage("Client supprimé.");
       setASupprimer(null);
-      reload();
-    } catch (e) {
-      setErreurAction(getErrorMessage(e));
+      recharger();
+    } catch (evenement) {
+      setErreurAction(getErrorMessage(evenement));
       setASupprimer(null);
     } finally {
       setSuppression(false);
@@ -137,7 +137,7 @@ export default function AdminClients() {
   return (
     <div>
       <div className="toolbar">
-        <SearchBar value={search} onChange={setSearch} placeholder="Nom, e-mail, téléphone..." />
+        <SearchBar value={search} onChange={definirRecherche} placeholder="Nom, e-mail, téléphone..." />
         <button className="btn btn-primary" onClick={() => setFormClient(null)}>+ Ajouter un client</button>
       </div>
 
@@ -145,24 +145,24 @@ export default function AdminClients() {
       <Alert type="error" onClose={() => setErreurAction("")}>{erreurAction}</Alert>
 
       <section className="panel">
-        {loading ? <Loader /> : error ? <ErrorState message={error} onRetry={reload} /> :
-          data.length === 0 ? <EmptyState text="Aucun client trouvé." /> : (
+        {chargement ? <Loader /> : erreurApi ? <ErrorState message={erreurApi} onRetry={recharger} /> :
+          donnees.length === 0 ? <EmptyState text="Aucun client trouvé." /> : (
             <>
             <div className="table-wrap">
               <table className="table">
                 <thead><tr><th>Client</th><th>Contact</th><th>Adresse</th><th>Réservations</th><th>Actions</th></tr></thead>
                 <tbody>
-                  {pagination.items.map((c) => (
-                    <tr key={c.id}>
-                      <td><strong>{c.prenom} {c.nom}</strong></td>
-                      <td>{c.email}<small>{c.telephone}</small></td>
-                      <td>{c.adresse}</td>
-                      <td>{c.nombre_reservations}</td>
+                  {pagination.items.map((categorie) => (
+                    <tr key={categorie.id}>
+                      <td><strong>{categorie.prenom} {categorie.nom}</strong></td>
+                      <td>{categorie.email}<small>{categorie.telephone}</small></td>
+                      <td>{categorie.adresse}</td>
+                      <td>{categorie.nombre_reservations}</td>
                       <td>
                         <div className="actions">
-                          <button className="btn btn-outline btn-sm" onClick={() => setVoirReservations(c)}>Réservations</button>
-                          <button className="btn btn-outline btn-sm" onClick={() => setFormClient(c)}>Modifier</button>
-                          <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(c)}>Supprimer</button>
+                          <button className="btn btn-outline btn-sm" onClick={() => setVoirReservations(categorie)}>Réservations</button>
+                          <button className="btn btn-outline btn-sm" onClick={() => setFormClient(categorie)}>Modifier</button>
+                          <button className="btn btn-danger-outline btn-sm" onClick={() => setASupprimer(categorie)}>Supprimer</button>
                         </div>
                       </td>
                     </tr>
@@ -170,7 +170,7 @@ export default function AdminClients() {
                 </tbody>
               </table>
             </div>
-            <Pagination {...pagination} count={data.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
+            <Pagination {...pagination} count={donnees.length} onPageChange={pagination.setPage} onPageSizeChange={pagination.setPageSize} />
             </>
           )}
       </section>

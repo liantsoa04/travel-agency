@@ -3,49 +3,47 @@ import api from "../services/api";
 
 const AuthContext = createContext(null);
 
-// Quel est l'espace de chaque rôle ?
-export function homePathFor(user) {
-  if (!user) return "/login";
-  return user.role === "client" ? "/" : "/admin";
+export function homePathFor(utilisateur) {
+  if (!utilisateur) return "/login";
+  return utilisateur.role === "client" ? "/" : "/admin";
 }
 
-export function AuthProvider({ children }) {
-  // On relit l'utilisateur sauvegardé pour rester connecté après un rechargement
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
+export function AuthProvider({ children: contenu }) {
+  const [utilisateur, definirUtilisateur] = useState(() => {
+    const utilisateurEnregistre = localStorage.getItem("user");
+    return utilisateurEnregistre ? JSON.parse(utilisateurEnregistre) : null;
   });
 
-  const isStaff = user?.role === "admin" || user?.role === "employe";
+  const estPersonnel = utilisateur?.role === "admin" || utilisateur?.role === "employe";
 
-  async function login(email, password) {
-    const { data } = await api.post("/auth/login/", { email, password });
-    localStorage.setItem("access", data.access);
-    localStorage.setItem("refresh", data.refresh);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
+  async function login(adresseCourriel, motDePasse) {
+    const { data: donnees } = await api.post("/auth/login/", { email: adresseCourriel, password: motDePasse });
+    localStorage.setItem("access", donnees.access);
+    localStorage.setItem("refresh", donnees.refresh);
+    localStorage.setItem("user", JSON.stringify(donnees.user));
+    definirUtilisateur(donnees.user);
+    return donnees.user;
   }
 
-  async function register(form) {
-    await api.post("/auth/register/", form);
-    return login(form.email, form.password);
+  async function register(formulaire) {
+    await api.post("/auth/register/", formulaire);
+    return login(formulaire.email, formulaire.password);
   }
 
   function logout() {
     localStorage.clear();
-    setUser(null);
+    definirUtilisateur(null);
   }
 
-  function updateUser(changes) {
-    const updated = { ...user, ...changes };
-    localStorage.setItem("user", JSON.stringify(updated));
-    setUser(updated);
+  function updateUser(modifications) {
+    const utilisateurModifie = { ...utilisateur, ...modifications };
+    localStorage.setItem("user", JSON.stringify(utilisateurModifie));
+    definirUtilisateur(utilisateurModifie);
   }
 
   return (
-    <AuthContext.Provider value={{ user, isStaff, login, register, logout, updateUser }}>
-      {children}
+    <AuthContext.Provider value={{ user: utilisateur, isStaff: estPersonnel, login, register, logout, updateUser }}>
+      {contenu}
     </AuthContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-/* ===== Variables : la palette du voyage (sable, vert, orange) ===== */
+
 :root {
   --sable: #f3e7d3;
   --beige: #e8d8bc;
@@ -16,8 +16,8 @@
   --bordure: #e0d2b8;
   --ombre: 0 2px 10px rgba(60, 45, 20, 0.08);
   --rayon: 12px;
-  --police-titre: "Fraunces", Georgia, serif;
-  --police-texte: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+  --police-titre: "Segoe UI", Arial, sans-serif;
+  --police-texte: "Segoe UI", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -41,36 +41,31 @@ img { max-width: 100%; display: block; }
 
 :focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
 
-/* ===== Boutons ===== */
+
 .btn {
   display: inline-block; border: 2px solid transparent; border-radius: 10px;
   padding: 0.6rem 1.1rem; font: 700 0.95rem var(--police-texte); cursor: pointer;
-  text-decoration: none; text-align: center; transition: background 0.15s, color 0.15s;
+  text-decoration: none; text-align: center;
 }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
 .btn-lg { padding: 0.85rem 1.4rem; font-size: 1.05rem; }
 .btn-block { display: block; width: 100%; }
 .btn-primary { background: var(--vert); color: #fff; }
-.btn-primary:hover:not(:disabled) { background: var(--vert-fonce); }
 .btn-accent { background: var(--orange); color: #fff; }
-.btn-accent:hover { background: var(--orange-fonce); }
 .btn-light { background: #fff; color: var(--vert-fonce); }
-.btn-light:hover { background: var(--sable); }
 .btn-outline { background: transparent; color: var(--vert-fonce); border-color: var(--bordure); }
-.btn-outline:hover { border-color: var(--vert); background: var(--vert-clair); }
 .btn-danger { background: var(--rouge); color: #fff; }
 .btn-danger-outline { background: transparent; color: var(--rouge); border-color: var(--rouge-clair); }
-.btn-danger-outline:hover { background: var(--rouge-clair); }
 
-/* ===== Badges ===== */
+
 .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
 .badge-green { background: var(--vert-clair); color: var(--vert-fonce); }
 .badge-orange { background: var(--orange-clair); color: var(--orange-fonce); }
 .badge-red { background: var(--rouge-clair); color: var(--rouge); }
 .badge-grey { background: var(--beige); color: var(--texte-doux); }
 
-/* ===== Formulaires ===== */
+
 .form-group { margin-bottom: 0.9rem; }
 .form-group label { display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem; }
 input, select, textarea {
@@ -85,23 +80,23 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .check { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
 .check input { width: auto; }
 
-/* ===== Alertes ===== */
+
 .alert { display: flex; justify-content: space-between; gap: 1rem; padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1rem; font-weight: 600; }
 .alert-error { background: var(--rouge-clair); color: var(--rouge); }
 .alert-success { background: var(--vert-clair); color: var(--vert-fonce); }
 .alert-close { background: none; border: 0; font-size: 1.3rem; cursor: pointer; color: inherit; }
 
-/* ===== États : chargement, vide, erreur ===== */
+
 .state-box { text-align: center; padding: 2.5rem 1rem; color: var(--texte-doux); }
 .state-icon { font-size: 2.2rem; margin-bottom: 0.4rem; }
 .state-error { color: var(--rouge); }
 .spinner { width: 38px; height: 38px; margin: 0 auto 0.7rem; border: 4px solid var(--beige); border-top-color: var(--vert); border-radius: 50%; animation: tourne 0.8s linear infinite; }
 @keyframes tourne { to { transform: rotate(360deg); } }
 
-/* ===== Images ===== */
+
 .img-fallback { display: flex; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, var(--beige), var(--vert-clair)); }
 
-/* ===== Modales ===== */
+
 .modal-overlay { position: fixed; inset: 0; background: rgba(30, 25, 15, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; }
 .modal { background: var(--blanc-casse); border-radius: var(--rayon); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
 .modal-wide { max-width: 780px; }
@@ -111,15 +106,15 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .modal-body { padding: 1.25rem; }
 .confirm-text { font-size: 1.05rem; }
 
-/* ===== Barre de recherche ===== */
+
 .searchbar { display: flex; align-items: center; gap: 0.5rem; background: #fff; border: 1.5px solid var(--bordure); border-radius: 10px; padding: 0 0.75rem; flex: 1; min-width: 200px; }
 .searchbar input { border: 0; box-shadow: none !important; padding: 0.6rem 0; }
 
-/* ===== Connexion / inscription ===== */
+
 .auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
 .auth-visual {
   background: linear-gradient(160deg, rgba(31,77,58,0.92), rgba(31,77,58,0.75)),
-    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=70") center/cover, var(--vert-fonce);
+    url("/images/voyages/1507525428034-b723cf961d3e.jpg") center/cover, var(--vert-fonce);
   color: #fff; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center;
 }
 .auth-visual .logo { color: #fff; text-decoration: none; font-size: 1.5rem; margin-bottom: auto; }
@@ -129,7 +124,7 @@ input:disabled { background: var(--sable); color: var(--texte-doux); }
 .auth-form { width: 100%; max-width: 440px; }
 .auth-switch { text-align: center; margin-top: 1rem; }
 
-/* ===== Responsive ===== */
+
 @media (max-width: 800px) {
   .auth-page { grid-template-columns: 1fr; }
   .auth-visual { padding: 1.5rem; min-height: 200px; }

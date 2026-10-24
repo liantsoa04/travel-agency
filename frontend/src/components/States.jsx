@@ -1,32 +1,32 @@
 import Icon from "./Icon";
 
-// Les 3 états d'interface : chargement, liste vide, erreur.
-export function Loader({ text = "Chargement..." }) {
+
+export function Loader({ texte = "Chargement..." }) {
   return (
     <div className="state-box">
       <div className="spinner" />
-      <p>{text}</p>
+      <p>{texte}</p>
     </div>
   );
 }
 
-export function EmptyState({ text = "Aucun résultat trouvé.", children }) {
+export function EmptyState({ texte = "Aucun résultat trouvé.", children: contenu }) {
   return (
     <div className="state-box">
       <div className="state-icon"><Icon name="boussole" size={26} /></div>
-      <p>{text}</p>
-      {children}
+      <p>{texte}</p>
+      {contenu}
     </div>
   );
 }
 
-export function ErrorState({ message, onRetry }) {
+export function ErrorState({ message, onRetry: reessayer }) {
   return (
     <div className="state-box state-error">
       <div className="state-icon"><Icon name="alerte" size={26} /></div>
       <p><strong>Une erreur est survenue.</strong></p>
       <p>{message || "Veuillez réessayer."}</p>
-      {onRetry && <button className="btn btn-outline" onClick={onRetry}>Réessayer</button>}
+      {reessayer && <button className="btn btn-outline" onClick={reessayer}>Réessayer</button>}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import Icon from "./Icon";
 
-// Logo de l'agence : un petit carré vert avec un avion + le nom.
-// Le composant parent (Link, div...) garde la classe "logo".
+
+
 export default function Logo({ suffixe = "Voyages" }) {
   return (
     <>
