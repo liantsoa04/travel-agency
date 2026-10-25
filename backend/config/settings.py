@@ -81,7 +81,7 @@ if config("DB_SSL", default=False, cast=bool):
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": config("DB_NAME", default="travel_agency"),
+        "NAME": config("DB_NAME", default="agence_voyage"),
         "USER": config("DB_USER", default="root"),
         "PASSWORD": config("DB_PASSWORD", default=""),
         "HOST": config("DB_HOST", default="localhost"),

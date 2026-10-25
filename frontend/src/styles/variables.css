@@ -1,39 +1,23 @@
-
-
-
-
+/* Variables globales - Design purifie et minimaliste */
 :root {
-
-  --blanc-casse: #fbf8f1;
-  --sable: #f4ecdc;
-  --beige: #e9dcc3;
-
-
-  --vert: #2f6b4f;
-  --vert-fonce: #1b4332;
-  --vert-clair: #e1eee5;
-
-
-  --orange: #d9772b;
-  --orange-fonce: #b85f1c;
-  --orange-clair: #fbebdc;
-
-
-  --rouge: #b5412f;
-  --rouge-clair: #f6dcd6;
-
-
-  --texte: #26241f;
-  --texte-doux: #6a6457;
-  --bordure: #e6dcc7;
-
-
-  --rayon: 14px;
-  --rayon-petit: 10px;
-  --ombre: 0 1px 3px rgba(40, 30, 10, 0.06), 0 4px 14px rgba(40, 30, 10, 0.05);
-  --ombre-forte: 0 12px 32px rgba(40, 30, 10, 0.16);
-
-
-  --police-titre: "Segoe UI", Arial, sans-serif;
-  --police-texte: "Segoe UI", Arial, sans-serif;
+  --blanc-casse: #fcfcfc;
+  --sable: #f8fafc;
+  --beige: #f1f5f9;
+  --vert: #15803d;
+  --vert-fonce: #14532d;
+  --vert-clair: #dcfce7;
+  --orange: #ea580c;
+  --orange-fonce: #c2410c;
+  --orange-clair: #ffedd5;
+  --rouge: #dc2626;
+  --rouge-clair: #fee2e2;
+  --texte: #0f172a;
+  --texte-doux: #64748b;
+  --bordure: #e2e8f0;
+  --rayon: 8px;
+  --rayon-petit: 6px;
+  --ombre: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+  --ombre-forte: 0 4px 12px 0 rgba(15, 23, 42, 0.08);
+  --police-titre: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --police-texte: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
