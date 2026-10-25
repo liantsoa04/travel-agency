@@ -30,15 +30,7 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
-```env
-SECRET_KEY=remplacer-par-une-cle-secrete
-DEBUG=True
-DB_NAME=travel_agency
-DB_USER=root
-DB_PASSWORD=
-DB_HOST=localhost
-DB_PORT=3306
-```
+
 
 
 
